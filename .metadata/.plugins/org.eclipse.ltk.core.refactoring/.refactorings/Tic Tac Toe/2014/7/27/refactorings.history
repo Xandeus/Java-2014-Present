@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;GameLoopThread.java&apos; to &apos;Tic Tac Toe/src/com.example.helloworld&apos;&#x0D;&#x0A;- Original project: &apos;Tic Tac Toe&apos;&#x0D;&#x0A;- Destination element: &apos;Tic Tac Toe/src/com.example.helloworld&apos;&#x0D;&#x0A;- Original element: &apos;com.example.helloworld.GameLoopThread.java&apos;" description="Copy compilation unit" destination="/src&lt;com.example.helloworld" element1="/src&lt;com.example.helloworld{GameLoopThread.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1404572505548" units="1" version="1.0"/>
+</session>

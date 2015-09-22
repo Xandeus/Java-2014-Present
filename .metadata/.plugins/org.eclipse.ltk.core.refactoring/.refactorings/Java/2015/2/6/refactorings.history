@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 3 elements to &apos;Java/src/AI&apos;&#x0D;&#x0A;- Original project: &apos;Java&apos;&#x0D;&#x0A;- Destination element: &apos;Java/src/AI&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     Brain.java&#x0D;&#x0A;     Organism.java&#x0D;&#x0A;     PathFinder.java&#x0D;&#x0A;- Update references to refactored element" description="Move compilation units" destination="/src&lt;AI" element1="/src&lt;{Brain.java" element2="/src&lt;{Organism.java" element3="/src&lt;{PathFinder.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1423268726238" units="3" version="1.0"/>
+</session>

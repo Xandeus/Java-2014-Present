@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 6 elements to &apos;GridPlace/src/project2&apos;&#x0D;&#x0A;- Original project: &apos;GridPlace&apos;&#x0D;&#x0A;- Destination element: &apos;GridPlace/src/project2&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     Game.java&#x0D;&#x0A;     Predator.java&#x0D;&#x0A;     Objects.java&#x0D;&#x0A;     MouseEvents.java&#x0D;&#x0A;     Organism.java&#x0D;&#x0A;     Food.java" description="Copy compilation units" destination="/src&lt;project2" element1="/src&lt;{Game.java" element2="/src&lt;{Predator.java" element3="/src&lt;{Objects.java" element4="/src&lt;{MouseEvents.java" element5="/src&lt;{Organism.java" element6="/src&lt;{Food.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1439166168433" units="6" version="1.0"/>
+</session>

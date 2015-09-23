@@ -39,7 +39,7 @@ public class Server extends JFrame{
 				}catch(EOFException eofException){
 					showMessage("\n Server ended connection");
 				}finally{
-					closeServer();
+					closeStreams();
 				}
 			}
 		}catch(IOException ioException){
@@ -73,5 +73,44 @@ public class Server extends JFrame{
 				showMessage("\n error");
 			}
 		}while(!message.equals("CLIENT - END"));
+	}
+	private void closeStreams(){
+		showMessage("\n Closing connections");
+		ableToType(false);
+		try{
+			output.close();
+			input.close();
+			connection.close();
+		}catch(IOException ioException){
+			ioException.printStackTrace();
+		}
+	}
+	//send message to client
+	private void sendMessage(String message){
+		try {
+			output.writeObject("SERVER - " + message);
+			
+			output.flush();
+			showMessage("\nSERVER - " + message);
+		}catch(IOException ioException){
+			chatWindow.append("\n Cannot send message");
+		}
+	}
+	//Update chat window
+	private void showMessage(final String text){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				chatWindow.append(text);
+			}
+		});
+	}
+	
+	//Change user ability to type
+	private void ableToType(final boolean tof) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				userText.setEditable(tof);
+			}
+		});
 	}
 }

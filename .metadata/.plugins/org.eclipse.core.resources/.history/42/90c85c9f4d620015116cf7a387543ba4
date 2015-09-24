@@ -1,0 +1,153 @@
+import java.io.*;
+import java.net.*;
+import java.util.Iterator;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+
+public class Server extends JPanel {
+	private JTextField userText;
+	private JPanel panel;
+	private JTextArea chatWindow;
+	private ObjectOutputStream output;
+	private ObjectInputStream input;
+	private ServerSocket server;
+	private Socket connection;
+	HandlerClass handler = new HandlerClass();
+	public Server(){
+		
+		
+	}
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setColor(Color.black);
+		int width = 1000;
+	    int height = 800;
+		for(int x = 0; x <= width; x+=5)
+  	    {
+			g.drawLine(x,0,x,height);
+  	    }
+		for(int y = 0; y <= height; y+=5)
+  	    {
+			g.drawLine(0,y,width,y);
+  	    }
+		for(Iterator<Objects> iterator = allObj.iterator(); iterator.hasNext();){
+		    Objects obj = iterator.next();
+		    g2d.setColor(obj.getColor());
+		    if(obj instanceof Predator)
+		    	g2d.fillRect(obj.getX(),obj.getY(), obj.getSize(),obj.getSize());
+		    g2d.fillRect(obj.getX(),obj.getY(), 5,5);
+			obj.operate(allObj);
+			//obj.setColor(randColor());
+			if(obj.isActive == false)
+				iterator.remove();
+		}
+	}
+	//Set up server
+	public void startRunning(){
+		try{
+			server = new ServerSocket(6789,100);
+			while(true){
+				try{
+					waitForConnection();
+					setupStreams();
+					whileChatting();
+				}catch(EOFException eofException){
+					showMessage("\n Server ended connection");
+				}finally{
+					closeStreams();
+				}
+			}
+		}catch(IOException ioException){
+			ioException.printStackTrace();
+		}
+	}
+	//Wait for connection, then display info
+	private void waitForConnection() throws IOException{
+		showMessage("Waiting for connection... \n");
+		connection = server.accept();
+		showMessage(" Now connected to " + connection.getInetAddress().getHostName());
+		
+	}
+	//Get stream to send and receive data
+	private void setupStreams() throws IOException{
+		output = new ObjectOutputStream(connection.getOutputStream());
+		output.flush();
+		input = new ObjectInputStream(connection.getInputStream());
+		showMessage("\nStreams setup");
+	}
+	//During the chat conversation
+	private void whileChatting() throws IOException{
+		String message = "You are connected";
+		sendMessage(message);
+		ableToType(true);
+		do{
+			try{
+				message = (String) input.readObject();
+				showMessage("\n" + message);
+			}catch(ClassNotFoundException classNotFoundException){
+				showMessage("\n error");
+			}
+		}while(!message.equals("CLIENT - END"));
+	}
+	private void closeStreams(){
+		showMessage("\n Closing connections");
+		ableToType(false);
+		try{
+			output.close();
+			input.close();
+			connection.close();
+		}catch(IOException ioException){
+			ioException.printStackTrace();
+		}
+	}
+	//send message to client
+	private void sendMessage(String message){
+		try {
+			output.writeObject("SERVER - " + message);
+			
+			output.flush();
+			showMessage("\nSERVER - " + message);
+		}catch(IOException ioException){
+			chatWindow.append("\n Cannot send message");
+		}
+	}
+	//Update chat window
+	private void showMessage(final String text){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				chatWindow.append(text);
+			}
+		});
+	}
+	
+	//Change user ability to type
+	private void ableToType(final boolean tof) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				userText.setEditable(tof);
+			}
+		});
+	}
+}

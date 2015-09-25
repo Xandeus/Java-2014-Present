@@ -14,6 +14,7 @@ public class Server extends JFrame{
 	private ObjectInputStream input;
 	private ServerSocket server;
 	private Socket connection;
+	public  Player pServer = new Player(0,0),pClient = new Player(0,0);
 	private int serverX =0,serverY=0;
 	private int clientX =0,clientY=0;
 	public Server(){
@@ -22,7 +23,7 @@ public class Server extends JFrame{
 		userText.setEditable(false);
 		userText.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent event){
-				sendMessage(event.getActionCommand());
+				//sendMessage(event.getActionCommand());
 				userText.setText("");
 			}
 		});
@@ -43,33 +44,29 @@ public class Server extends JFrame{
             int keyCode = event.getKeyCode();
             if (keyCode == event.VK_LEFT)
             {
-            	System.out.println("LEFT");
-            	serverX-=5;
+            	pServer.moveX(-pServer.getMovementspeed());
             	sendMessage(0);
             	
             }
             if (keyCode == event.VK_RIGHT)
             {
-            	System.out.println("RIGHT");
-            	serverX+=5;
-            	sendMessage(2);
-            	
+            	pServer.moveX(pServer.getMovementspeed());
+            	sendMessage(1);
             }
             if (keyCode == event.VK_UP)
             {
-            	System.out.println("UP");
-            	serverY-=5;
-            	sendMessage(3);
-            	
+            	pServer.moveY(-pServer.getMovementspeed());
+            	sendMessage(2);
             }
             if (keyCode == event.VK_DOWN)
             {
-            	System.out.println("DOWN");
-            	serverY+=5;
-            	sendMessage(1);
-            	
+            	pServer.moveY(pServer.getMovementspeed());
+            	sendMessage(3);
             }
+            
+			System.out.println("Client " + pClient.getX());
             repaint();
+            
         }
 
         @Override
@@ -81,9 +78,9 @@ public class Server extends JFrame{
       public void paintComponent(Graphics g){
         //draw on g here e.g.
     	 g.setColor(Color.RED);
-         g.fillRect(serverX, serverY, 10, 10);
+         g.fillRect((int)pServer.getX(), (int)pServer.getY(), 10, 10);
          g.setColor(Color.BLUE);
-         g.fillRect(clientX, clientY, 10, 10);
+         g.fillRect((int)pClient.getX(), (int)pClient.getY(), 10, 10);
        }
    }
 	//Set up server
@@ -123,27 +120,21 @@ public class Server extends JFrame{
 	private void whileChatting() throws IOException{
 		String message = "You are connected";
 		int num;
-		sendMessage(message);
+
 		ableToType(true);
 		do{
 			try{
-//				if(input.readObject().getClass()getContentPane().e))
-//					message = (String) input.readObject();
-			//	message = (String) input.readObject();
 				num = input.readInt();
 				showMessage("\n" + message);
-				if(num == 0){
-					clientX-=5;
-				}
-				else if(num == 2){
-					clientX+=5;
-				}
-				else if(num == 1){
-					clientY+=5;
-				}
-				else if(num == 3){
-					clientY-=5;
-				}
+				if(num == 0)
+					pClient.moveX(-pClient.getMovementspeed());
+				if(num == 1)
+					pClient.moveX(pClient.getMovementspeed());
+				if(num == 2)
+					pClient.moveY(-pClient.getMovementspeed());
+				if(num == 3)
+					pClient.moveY(pClient.getMovementspeed());
+				showMessage("\n" + message);
 				repaint();
 			}catch(IOException ioException){
 				showMessage("\n error");
@@ -162,19 +153,27 @@ public class Server extends JFrame{
 		}
 	}
 	//send message to client
-	private void sendMessage(String message){
-		try {
-			output.writeObject("SERVER - " + message);
-			
-			output.flush();
-			showMessage("\nSERVER - " + message);
-		}catch(IOException ioException){
-			chatWindow.append("\n Cannot send message");
-		}
-	}
+//	private void sendMessage(String message){
+//		try {
+//			output.writeObject("SERVER - " + message);
+//			
+//			output.flush();
+//			showMessage("\nSERVER - " + message);
+//		}catch(IOException ioException){
+//			chatWindow.append("\n Cannot send message");
+//		}
+//	}
 	private void sendMessage(int num){
 		try {
 			output.writeInt(num);
+			output.flush();
+		} catch (IOException ioException) {
+			chatWindow.append("\n Error while sending message");
+		}
+	}
+	private void sendMessage(Player player){
+		try {
+			output.writeObject(player);
 			output.flush();
 		} catch (IOException ioException) {
 			chatWindow.append("\n Error while sending message");

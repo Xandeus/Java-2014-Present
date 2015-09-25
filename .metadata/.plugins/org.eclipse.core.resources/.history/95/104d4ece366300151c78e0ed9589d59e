@@ -1,0 +1,27 @@
+
+public class Player implements Serializable{
+	private float posX;
+	private float posY;
+	public Player(float x, float y){
+		posX = x;
+		posY = y;
+	}
+	public float getX(){
+		return posX;
+	}
+	public float getY(){
+		return posY;
+	}
+	public void setX(int x){
+		posX = x;
+	}
+	public void setY(int y){
+		posY = y;
+	}
+	public void moveX(int x){
+		posX += x;
+	}
+	public void moveY(int y){
+		posY += y;
+	}
+}

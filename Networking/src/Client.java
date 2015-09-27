@@ -1,9 +1,8 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class Client extends JFrame {
@@ -16,67 +15,83 @@ public class Client extends JFrame {
 	private String message = "";
 	private String serverIP;
 	private Socket connection;
-	private boolean connected = false;
-	public Player client = new Player(0,0);
-	public Player server = new Player(0,0);
-	int clientX = 0, clientY = 0;
-	int serverX = 0, serverY = 0;
+	private boolean pConnected = false;
+	private Player pClient = new Player(0, 0);
+	private Player pServer;
+	private ArrayList<NPC> npcs;
 
-	// constructor
+	// Creates GUI assigns IP from host
 	public Client(String host) {
-		super("Client");
-		System.out.println("CLIENT");
+		super("Box Party - CLIENT");
 		serverIP = host;
-		userText = new JTextField();
-		userText.setEditable(false);
-		userText.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				//sendMessage(event.getActionCommand());
-				userText.setText("");
-			}
-		});
-		add(userText, BorderLayout.NORTH);
-		chatWindow = new JTextArea();
-		setContentPane(new DrawPane());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame = new DrawPane();
+		chatWindow = new JTextArea();
+		add(chatWindow, BorderLayout.SOUTH);
+		chatWindow.setPreferredSize(new Dimension(400, 50));
 		addKeyListener(new AL());
-		setSize(400, 400);
+		addMouseListener(new MouseAL());
+		setSize(800, 600);
+		setAlwaysOnTop(true);
+		setLocation(1000, 150);
 		setVisible(true);
+		setResizable(false);
+		setBackground(Color.black);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setContentPane(mainFrame);
 
 	}
 
-	public class AL extends KeyAdapter {
+	// Listens for mouse actions
+	public class MouseAL implements MouseListener {
 
+		public void mousePressed(MouseEvent e) {
+		}
+
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		public void mouseExited(MouseEvent e) {
+		}
+
+		public void mouseClicked(MouseEvent e) {
+
+			System.out.println("Clicked at X: " + e.getX() + " Y: " + e.getY());
+		}
+
+	}
+
+	// Listens for keyboard actions
+	public class AL extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent event) {
+
 			int keyCode = event.getKeyCode();
-			if (keyCode == event.VK_LEFT)
-            {
-            	client.moveX(-client.getMovementspeed());
-            	sendMessage(0);
-            	
-            }
-            if (keyCode == event.VK_RIGHT)
-            {
-            	client.moveX(client.getMovementspeed());
-            	sendMessage(1);
-            }
-            if (keyCode == event.VK_UP)
-            {
-            	client.moveY(-client.getMovementspeed());
-            	sendMessage(2);
-            }
-            if (keyCode == event.VK_DOWN)
-            {
-            	client.moveY(client.getMovementspeed());
-            	sendMessage(3);
-            }
+			if (keyCode == event.VK_LEFT) {
+				pClient.setXVel(-1);
+				pClient.setYVel(0);
+			}
+			if (keyCode == event.VK_RIGHT) {
+				pClient.setXVel(1);
+				pClient.setYVel(0);
+			}
+			if (keyCode == event.VK_UP) {
+				pClient.setYVel(-1);
+				pClient.setXVel(0);
+			}
+			if (keyCode == event.VK_DOWN) {
+				pClient.setYVel(1);
+				pClient.setXVel(0);
+			}
 			repaint();
 		}
 
 		@Override
 		public void keyReleased(KeyEvent event) {
+			pClient.setXVel(0);
+			pClient.setYVel(0);
 		}
 	}
 
@@ -84,15 +99,31 @@ public class Client extends JFrame {
 	class DrawPane extends JPanel {
 		public void paintComponent(Graphics g) {
 			// draw on g here e.g.
-			g.setColor(Color.RED);
-			g.fillRect((int)server.getX(), (int)server.getY(), 10, 10);
-
 			g.setColor(Color.BLUE);
-			g.fillRect((int)client.getX(), (int)client.getY(), 10, 10);
+			g.fillRect(pClient.getX(), pClient.getY(), 10, 10);
+			if (pServer != null) {
+				g.setColor(Color.RED);
+				g.fillRect(pServer.getX(), pServer.getY(), 10, 10);
+			}
+			if (pConnected && npcs != null) {
+				for (NPC npc : npcs) {
+					g.setColor(npc.getColor());
+					g.fillRect(npc.getX(), npc.getY(), 10, 10);
+				}		
+				sendMessage(pClient);
+			}
+			gameLoop();
+		}
+	}
+	public void gameLoop(){
+		pClient.move();
+		repaint();
+		if(pConnected){
+			sendMessage(pClient);
 		}
 	}
 
-	// Connect to server
+	// Start the client and attempt to connect to server
 	public void startRunning() {
 		try {
 			connectToServer();
@@ -111,7 +142,7 @@ public class Client extends JFrame {
 	private void connectToServer() throws IOException {
 		showMessage("Attempting connection... \n");
 		connection = new Socket(InetAddress.getByName(serverIP), 6789);
-		connected = true;
+		pConnected = true;
 		showMessage("Connected to: " + connection.getInetAddress().getHostName());
 	}
 
@@ -125,26 +156,18 @@ public class Client extends JFrame {
 
 	// While chatting with server
 	private void whileChatting() throws IOException {
-		// client = new Player(0,0);
-		int num;
-		ableToType(true);
+		pConnected = true;
+		Object temp;
 		do {
 			try {
-				num = input.readInt();
-				showMessage("\n" + message);
-				if(num == 0)
-					server.moveX(-server.getMovementspeed());
-				if(num == 1)
-					server.moveX(server.getMovementspeed());
-				if(num == 2)
-					server.moveY(-server.getMovementspeed());
-				if(num == 3)
-					server.moveY(server.getMovementspeed());
-				repaint();
-			} catch (IOException ioException) {
+				temp = input.readObject();
+				if (temp instanceof Player)
+					pServer = (Player) temp;
+				else if (temp instanceof ArrayList)
+					npcs = (ArrayList<NPC>) temp;
+			} catch (ClassNotFoundException classNotFoundException) {
 				showMessage("\n Object not found");
 			}
-
 		} while (!message.equals("Server - END"));
 	}
 
@@ -161,17 +184,18 @@ public class Client extends JFrame {
 		}
 	}
 
-	// Send messages to server
-//	private void sendMessage(String message) {
-//		try {
-//			output.writeObject("CLIENT - " + message);
-//			output.flush();
-//			showMessage("\nCLIENT - " + message);
-//		} catch (IOException ioException) {
-//			chatWindow.append("\n Error while sending message");
-//		}
-//	}
+	// Send strings to server
+	private void sendMessage(String message) {
+		try {
+			output.writeObject("CLIENT - " + message);
+			output.flush();
+			showMessage("\nCLIENT - " + message);
+		} catch (IOException ioException) {
+			chatWindow.append("\n Error while sending message");
+		}
+	}
 
+	// Send ints to the server
 	private void sendMessage(int num) {
 		try {
 			output.writeInt(num);
@@ -181,15 +205,18 @@ public class Client extends JFrame {
 			chatWindow.append("\n Error while sending message");
 		}
 	}
-//	private void sendMessage(Player player) {
-//		try {
-//			output.writeObject(player);
-//			output.flush();
-//			showMessage("\nCLIENT - " + message);
-//		} catch (IOException ioException) {
-//			chatWindow.append("\n Error while sending message");
-//		}
-//	}
+
+	// Send player objects to server
+	private void sendMessage(Player player) {
+		try {
+			output.reset();
+			output.writeObject(player);
+			output.flush();
+			showMessage("\nCLIENT - " + message);
+		} catch (IOException ioException) {
+			chatWindow.append("\n Error while sending message");
+		}
+	}
 
 	// Show message
 	private void showMessage(final String message) {

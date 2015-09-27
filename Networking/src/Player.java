@@ -3,11 +3,13 @@ import java.io.Serializable;
 public class Player implements Serializable{
 	private int posX;
 	private int posY;
-	private int moveSpeed;
+	private int xVel,yVel;
+	private float tick = 0;
 	public Player(int x, int y){
 		posX = x;
 		posY = y;
-		moveSpeed = 8;
+		xVel = 0;
+		yVel = 0;
 	}
 	public int getX(){
 		return posX;
@@ -15,19 +17,30 @@ public class Player implements Serializable{
 	public int getY(){
 		return posY;
 	}
+	public int getXVel(){
+		return xVel;
+	}
+	public int getYVel(){
+		return yVel;
+	}
 	public void setX(int x){
 		posX = x;
 	}
 	public void setY(int y){
 		posY = y;
 	}
-	public void moveX(float x){
-		posX += (int)x;
+	public void setXVel(int x){
+		xVel = x;
 	}
-	public void moveY(float y){
-		posY += (int)y;
-	}
-	public int getMovementspeed(){
-		return moveSpeed;
+	public void setYVel(int y){
+		yVel = y;
+	}	
+	public void move(){
+		tick+=.1f;
+		if(tick>=1){
+			posX += xVel;
+			posY += yVel;
+			tick = 0;
+		}
 	}
 }

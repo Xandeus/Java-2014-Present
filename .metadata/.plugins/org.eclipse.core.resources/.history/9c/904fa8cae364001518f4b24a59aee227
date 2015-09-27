@@ -1,0 +1,34 @@
+import java.io.Serializable;
+
+public class Player implements Serializable{
+	private int posX;
+	private int posY;
+	private int xVel,yVel;
+	public Player(int x, int y){
+		posX = x;
+		posY = y;
+		xVel = 0;
+		yVel = 0;
+	}
+	public int getX(){
+		return posX;
+	}
+	public int getY(){
+		return posY;
+	}
+	public void setX(int x){
+		posX = x;
+	}
+	public void setY(int y){
+		posY = y;
+	}
+	public void moveX(int x){
+		posX += x;
+	}
+	public void moveY(int y){
+		posY += y;
+	}
+	public int getMovementspeed(){
+		return moveSpeed;
+	}
+}

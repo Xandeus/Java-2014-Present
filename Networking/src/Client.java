@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+
 public class Client extends JFrame {
 
 	private JTextField userText;
@@ -26,13 +27,12 @@ public class Client extends JFrame {
 		serverIP = host;
 		mainFrame = new DrawPane();
 		chatWindow = new JTextArea();
-		add(chatWindow, BorderLayout.SOUTH);
-		chatWindow.setPreferredSize(new Dimension(400, 50));
 		addKeyListener(new AL());
 		addMouseListener(new MouseAL());
-		setSize(800, 600);
+		setPreferredSize(new Dimension(800,600));
 		setAlwaysOnTop(true);
-		setLocation(1000, 150);
+		setLocation(100, 150);
+		pack();
 		setVisible(true);
 		setResizable(false);
 		setBackground(Color.black);

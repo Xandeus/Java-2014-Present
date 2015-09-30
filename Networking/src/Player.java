@@ -36,11 +36,11 @@ public class Player implements Serializable{
 		yVel = y;
 	}	
 	public void move(){
-		tick+=.1f;
-		if(tick>=1){
+		//tick+=.2f;
+		//if(tick>=1){
 			posX += xVel;
 			posY += yVel;
 			tick = 0;
-		}
+		//}
 	}
 }

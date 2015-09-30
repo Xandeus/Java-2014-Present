@@ -25,13 +25,14 @@ public class Server extends JFrame {
 		super("Box Party - SERVER");
 		mainFrame = new DrawPane();
 		chatWindow = new JTextArea();
-		add(chatWindow, BorderLayout.SOUTH);
-		chatWindow.setPreferredSize(new Dimension(400, 50));
+//		add(chatWindow, BorderLayout.SOUTH);
+//		chatWindow.setPreferredSize(new Dimension(400, 50));
 		addKeyListener(new AL());
 		addMouseListener(new MouseAL());
-		setSize(800, 600);
+		setPreferredSize(new Dimension(800,600));
 		setAlwaysOnTop(true);
 		setLocation(100, 150);
+		pack();
 		setVisible(true);
 		setResizable(false);
 		setBackground(Color.black);
@@ -100,6 +101,7 @@ public class Server extends JFrame {
 		public void paintComponent(Graphics g) {
 			// draw on g here e.g.
 			g.setColor(Color.RED);
+
 			g.fillRect(pServer.getX(), pServer.getY(), 10, 10);
 			if (pClient != null) {
 				g.setColor(Color.BLUE);

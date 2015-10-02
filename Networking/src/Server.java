@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -23,6 +24,9 @@ public class Server extends JFrame {
 
 	public Server() {
 		super("Box Party - SERVER");
+		System.out.println("Enter your name");
+		Scanner scan = new Scanner(System.in);
+		pServer.setName(scan.nextLine());
 		mainFrame = new DrawPane();
 		chatWindow = new JTextArea();
 		add(chatWindow, BorderLayout.SOUTH);
@@ -37,7 +41,7 @@ public class Server extends JFrame {
 		setBackground(Color.black);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(mainFrame);
-		createNPCS(10);
+	//	createNPCS(10);
 	}
 
 	public void createNPCS(int num) {
@@ -62,7 +66,7 @@ public class Server extends JFrame {
 
 			System.out.println("Clicked at X: " + e.getX() + " Y: " + e.getY());
 		}
-		
+
 	}
 
 	public class AL extends KeyAdapter {
@@ -74,36 +78,60 @@ public class Server extends JFrame {
 				pServer.setYVel(0);
 			}
 			if (keyCode == event.VK_RIGHT) {
-				pServer.setXVel(1);	
+				pServer.setXVel(1);
 				pServer.setYVel(0);
-				}
+			}
 			if (keyCode == event.VK_UP) {
-				pServer.setYVel(-1);	
-				pServer.setXVel(0);}
+				pServer.setYVel(-1);
+				pServer.setXVel(0);
+			}
 			if (keyCode == event.VK_DOWN) {
-				pServer.setYVel(1);	
+				pServer.setYVel(1);
 				pServer.setXVel(0);
 			}
 		}
-		
+
 		@Override
 		public void keyReleased(KeyEvent event) {
-			pServer.setXVel(0);
-			pServer.setYVel(0);
+			int keyCode = event.getKeyCode();
+			if (keyCode == event.VK_LEFT) {
+				pServer.setXVel(0);
+
+			}
+			if (keyCode == event.VK_RIGHT) {
+				pServer.setXVel(0);
+			}
+			if (keyCode == event.VK_UP) {
+				pServer.setYVel(0);
+			}
+			if (keyCode == event.VK_DOWN) {
+				pServer.setYVel(0);
+			}
 		}
 
-		
 	}
 
 	// create a component that you can actually draw on.
 	class DrawPane extends JPanel {
 		public void paintComponent(Graphics g) {
 			// draw on g here e.g.
+			int nLength;
+			g.setFont(new Font("Tahoma", Font.PLAIN, 10));
 			g.setColor(Color.RED);
 			g.fillRect(pServer.getX(), pServer.getY(), 10, 10);
+			g.setColor(Color.WHITE);
+			nLength = (g.getFontMetrics().stringWidth(pServer.getName())-10)/2;
+			g.drawString(pServer.getName(), pServer.getX()-nLength, pServer.getY()-5);
+			nLength = (g.getFontMetrics().stringWidth(pServer.getMessage())-10)/2;
+			g.drawString(pServer.getMessage(), pServer.getX()-nLength, pServer.getY()+15);
 			if (pClient != null) {
 				g.setColor(Color.BLUE);
 				g.fillRect(pClient.getX(), pClient.getY(), 10, 10);
+				g.setColor(Color.WHITE);
+				nLength = (g.getFontMetrics().stringWidth(pClient.getName())-10)/2;
+				g.drawString(pClient.getName(), pClient.getX()-5, pClient.getY()-5);
+				nLength = (g.getFontMetrics().stringWidth(pClient.getMessage())-10)/2;
+				g.drawString(pClient.getMessage(), pClient.getX()-nLength, pClient.getY()+15);
 			}
 			if (pConnected)
 				for (NPC npc : npcs) {
@@ -111,17 +139,20 @@ public class Server extends JFrame {
 					g.fillRect(npc.getX(), npc.getY(), 10, 10);
 					npc.randomMove();
 				}
-			
+
 			gameLoop();
 		}
 	}
-	public void gameLoop(){
+
+	public void gameLoop() {
 		pServer.move();
 		repaint();
-		if(pConnected){
+		if (pConnected) {
 			sendMessage(npcs);
 			sendMessage(pServer);
 		}
+		Scanner scan = new Scanner(System.in);
+		scan.();
 	}
 
 	// Set up server

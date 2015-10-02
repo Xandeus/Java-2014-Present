@@ -1,9 +1,26 @@
-import java.io.*;
-import java.net.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.util.Scanner;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class Client extends JFrame {
 
@@ -23,6 +40,9 @@ public class Client extends JFrame {
 	// Creates GUI assigns IP from host
 	public Client(String host) {
 		super("Box Party - CLIENT");
+		System.out.println("Enter your name");
+		Scanner scan = new Scanner(System.in);
+		pClient.setName(scan.nextLine());
 		serverIP = host;
 		mainFrame = new DrawPane();
 		chatWindow = new JTextArea();
@@ -67,7 +87,6 @@ public class Client extends JFrame {
 	public class AL extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent event) {
-
 			int keyCode = event.getKeyCode();
 			if (keyCode == event.VK_LEFT) {
 				pClient.setXVel(-1);
@@ -85,13 +104,24 @@ public class Client extends JFrame {
 				pClient.setYVel(1);
 				pClient.setXVel(0);
 			}
-			repaint();
 		}
 
 		@Override
 		public void keyReleased(KeyEvent event) {
-			pClient.setXVel(0);
-			pClient.setYVel(0);
+			int keyCode = event.getKeyCode();
+			if (keyCode == event.VK_LEFT) {
+				pClient.setXVel(0);
+
+			}
+			if (keyCode == event.VK_RIGHT) {
+				pClient.setXVel(0);
+			}
+			if (keyCode == event.VK_UP) {
+				pClient.setYVel(0);
+			}
+			if (keyCode == event.VK_DOWN) {
+				pClient.setYVel(0);
+			}
 		}
 	}
 
@@ -99,16 +129,29 @@ public class Client extends JFrame {
 	class DrawPane extends JPanel {
 		public void paintComponent(Graphics g) {
 			// draw on g here e.g.
+			int nLength;
+			g.setFont(new Font("Tahoma", Font.PLAIN, 10));
 			g.setColor(Color.BLUE);
 			g.fillRect(pClient.getX(), pClient.getY(), 10, 10);
+			g.setColor(Color.WHITE);
+			nLength = (g.getFontMetrics().stringWidth(pClient.getName())-10)/2;
+			g.drawString(pClient.getName(), pClient.getX()-nLength, pClient.getY()-5);
+			nLength = (g.getFontMetrics().stringWidth(pClient.getMessage())-10)/2;
+			g.drawString(pClient.getMessage(), pClient.getX()-nLength, pClient.getY()+15);
 			if (pServer != null) {
 				g.setColor(Color.RED);
 				g.fillRect(pServer.getX(), pServer.getY(), 10, 10);
+				g.setColor(Color.WHITE);
+				nLength = (g.getFontMetrics().stringWidth(pServer.getName())-10)/2;
+				g.drawString(pServer.getName(), pServer.getX()-nLength, pServer.getY()-5);
+				nLength = (g.getFontMetrics().stringWidth(pServer.getMessage())-10)/2;
+				g.drawString(pServer.getMessage(), pServer.getX()-nLength, pServer.getY()+15);
 			}
 			if (pConnected && npcs != null) {
 				for (NPC npc : npcs) {
 					g.setColor(npc.getColor());
 					g.fillRect(npc.getX(), npc.getY(), 10, 10);
+					
 				}		
 				sendMessage(pClient);
 			}

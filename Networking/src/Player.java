@@ -4,6 +4,8 @@ public class Player implements Serializable{
 	private int posX;
 	private int posY;
 	private int xVel,yVel;
+	private String name;
+	private String message = "Hello";
 	private float tick = 0;
 	public Player(int x, int y){
 		posX = x;
@@ -17,6 +19,12 @@ public class Player implements Serializable{
 	public int getY(){
 		return posY;
 	}
+	public String getName(){
+		return name;
+	}
+	public String getMessage(){
+		return message;
+	}
 	public int getXVel(){
 		return xVel;
 	}
@@ -28,6 +36,12 @@ public class Player implements Serializable{
 	}
 	public void setY(int y){
 		posY = y;
+	}
+	public void setName(String name){
+		this.name = name;
+	}
+	public void setMessage(String message){
+		this.message = message;
 	}
 	public void setXVel(int x){
 		xVel = x;

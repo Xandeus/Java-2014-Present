@@ -1,0 +1,11 @@
+package Chess;
+
+public abstract class GamePiece {
+	int posX, posY;
+	public GamePiece(int x, int y){
+		posX = x;
+		posY = y;
+	}
+	public abstract void move(int x, int y);
+	
+}

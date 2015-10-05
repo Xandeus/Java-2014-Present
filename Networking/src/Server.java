@@ -152,7 +152,6 @@ public class Server extends JFrame {
 			sendMessage(pServer);
 		}
 		Scanner scan = new Scanner(System.in);
-		scan.();
 	}
 
 	// Set up server

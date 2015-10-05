@@ -1,0 +1,13 @@
+package Chess;
+
+public class Pawn extends GamePiece{
+
+	public Pawn(){
+		super();
+	}
+	public void move(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

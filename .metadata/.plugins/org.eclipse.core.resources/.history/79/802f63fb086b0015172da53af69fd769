@@ -1,0 +1,25 @@
+package Chess;
+
+import java.awt.Color;
+
+public class Pawn extends GamePiece{
+
+	public Pawn(int x, int y, Color color){
+		super(x,y,color);
+	}
+	public void move(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void avaliableMoves(GamePiece[][] pieces, int posX, int posY) {
+		// TODO Auto-generated method stub
+		
+		for (int x = 0; x < 8; x++) {
+			for (int y = 0; y < 2; y++) {
+				pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), Color.RED);
+			}
+		}
+	}
+
+}

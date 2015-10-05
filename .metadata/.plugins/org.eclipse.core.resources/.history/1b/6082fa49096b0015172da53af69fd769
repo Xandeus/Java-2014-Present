@@ -1,0 +1,27 @@
+package Chess;
+
+import java.awt.Color;
+
+public class Pawn extends GamePiece {
+
+	public Pawn(int x, int y, Color color) {
+		super(x, y, color);
+	}
+
+	public void move(int x, int y) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void avaliableMoves(GamePiece[][] pieces, int posX, int posY) {
+		// TODO Auto-generated method stub
+
+		for (int y = posY + 1; y < posY + 3; y++) {
+			if(pieces[posX][y] == null){
+				System.out.println("Spot at " + posX + " " posY);
+			}
+		}
+
+	}
+
+}

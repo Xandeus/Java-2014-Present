@@ -61,7 +61,7 @@ public class GameBoard extends JPanel {
 		for (int x = 0; x < pieces.length; x++) {
 			for (int y = 0; y < pieces[0].length; y++) {
 				if (y >= 0 && y < 2)
-					pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), Color.RED, x, y);
+					pieces[x][y] = new Rook(x * (width / 8), y * (height / 8), Color.RED, x, y);
 				else if(y>=6 && y < 8)
 					pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), Color.CYAN, x, y);
 				else
@@ -112,7 +112,6 @@ public class GameBoard extends JPanel {
 		}
 
 		public void mousePressed(MouseEvent event) {
-			boolean changedSelection = false;
 			int x1 = event.getX() - 5;
 			int y1 = event.getY() - 32;
 			GamePiece piece = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
@@ -120,11 +119,11 @@ public class GameBoard extends JPanel {
 				pSelected = piece;
 			}
 			if (x1 <= width && y1 <= height && piece != null && pSelected != null) {
-				if (!pSelected.getName().equals("null") && !piece.getName().equals("null")) {
+				if (!pSelected.getName().equals("null") && !piece.getName().equals("null") && (pSelected.getColor() == piece.getColor())) {
 					// Move position of highlight box
 					x = (x1 - (x1 % (width / 8)));
 					y = (y1 - (y1 % (height / 8)));
-				} else {
+				} else{
 					GamePiece desiredMove = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
 					if (pSelected.isMoveValid(desiredMove, pieces)) {
 						GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),

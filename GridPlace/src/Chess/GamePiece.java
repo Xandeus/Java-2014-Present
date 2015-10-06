@@ -15,8 +15,6 @@ public abstract class GamePiece {
 		
 		this.color = color;
 	}
-	
-	public abstract void move(int x, int y);
 	public abstract boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces);
 	public int getX(){
 		return x;

@@ -10,11 +10,6 @@ public class EmptySpace extends GamePiece{
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public void move(int x, int y) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces) {

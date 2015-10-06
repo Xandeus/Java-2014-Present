@@ -1,0 +1,13 @@
+package Chess;
+
+public class Rook extends GamePiece{
+
+
+
+	@Override
+	public boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}

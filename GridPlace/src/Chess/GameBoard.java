@@ -24,8 +24,11 @@ public class GameBoard extends JPanel {
 	int x = 0, y = 0;
 	int width = 800;
 	int height = 800;
+	boolean gameStarted = false;
+	boolean whiteTurn = true;
 	GamePiece[][] pieces = new GamePiece[8][8];
 	GamePiece pSelected = null;
+
 	public static void main(String[] args) throws InterruptedException {
 		frame();
 	}
@@ -35,7 +38,7 @@ public class GameBoard extends JPanel {
 	static JFrame frame = new JFrame("CHESS");
 
 	public static void frame() throws InterruptedException {
-        
+
 		GameBoard game = new GameBoard();
 		Font f = new Font("Engravers MT", Font.BOLD, 23);
 		text.setEditable(false);
@@ -54,9 +57,15 @@ public class GameBoard extends JPanel {
 	}
 
 	public void fillBoard() {
-		for (int x = 0; x < 8; x++) {
-			for (int y = 0; y < 2; y++) {
-				pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), Color.RED,x,y);
+
+		for (int x = 0; x < pieces.length; x++) {
+			for (int y = 0; y < pieces[0].length; y++) {
+				if (y >= 0 && y < 2)
+					pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), Color.RED, x, y);
+				else if(y>=6 && y < 8)
+					pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), Color.CYAN, x, y);
+				else
+					pieces[x][y] = new EmptySpace(x * (width / 8), y * (height / 8), null, x, y);
 			}
 		}
 	}
@@ -84,16 +93,17 @@ public class GameBoard extends JPanel {
 		}
 		for (GamePiece[] gamePiece : pieces) {
 			for (GamePiece p : gamePiece) {
-				if (p != null) {
+				if (p != null && !p.getName().equals("null")) {
 					g.setColor(p.getColor());
-					g.fillRect(p.getX(), p.getY(), 10, 10);
+					g.fillRect(p.getPosX() * (width / 8), p.getPosY() * (height / 8), 15, 15);
 				}
 			}
 		}
-		
+
 		// Selection square
 		g.setColor(Color.green);
-		g.drawRect(x, y, (height / 8), (width / 8));
+		if (pSelected != null)
+			g.drawRect(x, y, (height / 8), (width / 8));
 	}
 
 	private class HandlerClass implements MouseListener, MouseMotionListener {
@@ -102,26 +112,41 @@ public class GameBoard extends JPanel {
 		}
 
 		public void mousePressed(MouseEvent event) {
+			boolean changedSelection = false;
 			int x1 = event.getX() - 5;
 			int y1 = event.getY() - 32;
-			GamePiece piece = getPiece(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
-			pSelected = piece;
-			pSelected.avaliableMoves(pieces);
-			if (x1 <= width && y1 <= height) {
-				if (piece != null) {
+			GamePiece piece = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
+			if (!piece.getName().equals("null") && ((whiteTurn && piece.getColor() == Color.CYAN) || (!whiteTurn && piece.getColor() != Color.CYAN))) {
+				pSelected = piece;
+			}
+			if (x1 <= width && y1 <= height && piece != null && pSelected != null) {
+				if (!pSelected.getName().equals("null") && !piece.getName().equals("null")) {
+					// Move position of highlight box
 					x = (x1 - (x1 % (width / 8)));
 					y = (y1 - (y1 % (height / 8)));
-				}
+				} else {
+					GamePiece desiredMove = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
+					if (pSelected.isMoveValid(desiredMove, pieces)) {
+						GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),
+								pSelected.getPosY() * (height / 8), null, pSelected.getPosX(), pSelected.getPosY());
+						pieces[pSelected.getPosX()][pSelected.getPosY()] = temp;
+						pSelected.setPosX(desiredMove.getPosX());
+						pSelected.setPosY(desiredMove.getPosY());
+						pieces[desiredMove.getPosX()][desiredMove.getPosY()] = pSelected;
 
+						pSelected = null;
+						whiteTurn = !whiteTurn;
+					}
+				}
 			}
 			repaint();
 		}
 
-		private GamePiece getPiece(int x, int y) {
+		private GamePiece getArrayPos(int x, int y) {
 			// TODO Auto-generated method stub
 			for (GamePiece[] gamePiece : pieces) {
 				for (GamePiece p : gamePiece) {
-					if (p != null && p.getX() == x && p.getY() == y) {
+					if (p.getPosX() * (width / 8) == x && p.getPosY() * (height / 8) == y) {
 						return p;
 					}
 				}
@@ -134,8 +159,11 @@ public class GameBoard extends JPanel {
 		}
 
 		public void mouseEntered(MouseEvent event) {
-			fillBoard();
-			repaint();
+			if (!gameStarted) {
+				fillBoard();
+				repaint();
+				gameStarted = true;
+			}
 		}
 
 		public void mouseExited(MouseEvent event) {

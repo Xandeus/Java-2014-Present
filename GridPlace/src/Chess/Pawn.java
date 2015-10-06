@@ -3,29 +3,55 @@ package Chess;
 import java.awt.Color;
 
 public class Pawn extends GamePiece {
-	String name;
-	public Pawn(int x, int y, Color color,int posX, int posY) {
-		super(x, y, color,posX,posY);
-		name = "Pawn";
+	int endVal =3;
+	public Pawn(int x, int y, Color color, int posX, int posY) {
+		super(x, y, color, posX, posY);
+		setName("pawn");
 	}
 
+	// Move based on array pos
 	public void move(int x, int y) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void avaliableMoves(GamePiece[][] pieces) {
+	public boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces) {
 		// TODO Auto-generated method stub
+		// System.out.println(desiredMove.getName());
 		int posX = this.getPosX();
 		int posY = this.getPosY();
-		for (int y = posY+ 1; y < posY + 3; y++) {
-			if (pieces[posX][y] == null) {
-				System.out.println("Spot at " + posX + " " + y);
+		System.out.println(this.getColor());
+		if (this.getColor() == Color.RED){
+			System.out.println("SDfsadf");
+			for (int y = posY + 1; y < posY + endVal; y++) {
+				if (pieces[posX][y].getName().equals("null")){
+					if (desiredMove.getPosX() == posX && desiredMove.getPosY() == y) {
+						endVal =2;
+						return true;
+					}
+				}
+				if(pieces[posX][y].getColor() != Color.red){
+					if (!pieces[posX-1][posY+1].getName().equals("null") && desiredMove.getPosX() == posX-1 && desiredMove.getPosY() == y+1) {
+						return true;
+					}
+					else if (!pieces[posX+1][posY+1].getName().equals("null") && desiredMove.getPosX() == posX+1 && desiredMove.getPosY() == y+1) {
+						return true;
+					}
+				}
+				else
+					return false;
 			}
 		}
+		else
+			for (int y = posY - 1; y > posY - endVal; y--) {
+				if (pieces[posX][y].getName().equals("null")) {
+					if (desiredMove.getPosX() == posX && desiredMove.getPosY() == y) {
+						endVal =2;
+						return true;				
+					}
+				} else
+					return false;
+			}
+		return false;
 	}
-	public String getName(){
-		return name;
-	}
-
 }

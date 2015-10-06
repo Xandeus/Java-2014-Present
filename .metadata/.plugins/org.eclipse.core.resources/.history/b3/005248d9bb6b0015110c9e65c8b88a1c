@@ -1,0 +1,49 @@
+package Chess;
+
+import java.awt.Color;
+
+public class Pawn extends GamePiece {
+	int endVal =3;
+	public Pawn(int x, int y, Color color, int posX, int posY) {
+		super(x, y, color, posX, posY);
+		setName("pawn");
+	}
+
+	// Move based on array pos
+	public void move(int x, int y) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces) {
+		// TODO Auto-generated method stub
+		// System.out.println(desiredMove.getName());
+		int posX = this.getPosX();
+		int posY = this.getPosY();
+
+		if (this.color == Color.RED)
+			for (int y = posY + 1; y < posY + endVal; y++) {
+				if(pieces[posX][y].getColor() != Color.red && (!pieces[posX-1][posY+1].getName().equals("null") || !pieces[posX+1][posY+1].getName().equals("null"))){
+					
+				}
+				if (pieces[posX][y].getName().equals("null")){
+					if (desiredMove.getPosX() == posX && desiredMove.getPosY() == y) {
+						endVal =2;
+						return true;
+					}
+				} else
+					return false;
+			}
+		else
+			for (int y = posY - 1; y > posY - endVal; y--) {
+				if (pieces[posX][y].getName().equals("null") && desiredMove.getName().equals("null")) {
+					if (desiredMove.getPosX() == posX && desiredMove.getPosY() == y) {
+						endVal =2;
+						return true;				
+					}
+				} else
+					return false;
+			}
+		return false;
+	}
+}

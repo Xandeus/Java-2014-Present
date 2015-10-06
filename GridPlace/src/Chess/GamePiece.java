@@ -17,7 +17,7 @@ public abstract class GamePiece {
 	}
 	
 	public abstract void move(int x, int y);
-	public abstract void avaliableMoves(GamePiece[][] pieces);
+	public abstract boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces);
 	public int getX(){
 		return x;
 	}
@@ -33,7 +33,19 @@ public abstract class GamePiece {
 	public String getName(){
 		return name;
 	}
+	public void setPosX(int x){
+		pX = x;
+	}
+	public void setPosY(int y) {
+		// TODO Auto-generated method stub
+		pY = y;
+	}
+	public void setName(String name){
+		this.name = name;
+	}
 	public Color getColor(){
 		return color;
 	}
+
+	
 }

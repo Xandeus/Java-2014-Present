@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;Chess.GameBoard.HandlerClass.getPiece(...)&apos; to &apos;getArrayPos&apos;&#x0D;&#x0A;- Original project: &apos;GridPlace&apos;&#x0D;&#x0A;- Original element: &apos;Chess.GameBoard.HandlerClass.getPiece(...)&apos;&#x0D;&#x0A;- Renamed element: &apos;Chess.GameBoard.HandlerClass.getArrayPos(...)&apos;&#x0D;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;getPiece&apos;" flags="589826" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;Chess{GameBoard.java[GameBoard[HandlerClass~getPiece~I~I" name="getArrayPos" references="true" stamp="1444080727332" version="1.0"/>
+</session>

@@ -32,8 +32,7 @@ public class Pawn extends GamePiece{
 		// TODO Auto-generated method stub
 		validMoves = findValidMoves(pieces);
 		for (GamePiece p : validMoves) {
-			System.out.println(p.getPosY() + " " + desiredMove.getPosX());
-			if ((p.getPosX() == desiredMove.getPosX()) && (p.getPosY() == desiredMove.getPosY())) {
+			if (p==desiredMove) {
 				fMove = false;
 				return true;
 			}
@@ -51,10 +50,10 @@ public class Pawn extends GamePiece{
 		}
 		if (!isWhite()) {
 			for (int y = posY + 1; y < posY + endVal; y++) {
-				if (posX != 0 && !pieces[posX - 1][posY + 1].isWhite()
+				if (posX != 0 && pieces[posX - 1][posY + 1].isWhite()
 						&& !pieces[posX - 1][posY + 1].getName().equals("null")) {
 					validMoves.add(pieces[posX - 1][posY + 1]);
-				}if (posX != 7 && !pieces[posX + 1][posY + 1].isWhite()
+				}if (posX != 7 && pieces[posX + 1][posY + 1].isWhite()
 						&& !pieces[posX + 1][posY + 1].getName().equals("null")) {
 					validMoves.add(pieces[posX + 1][posY + 1]);
 				}

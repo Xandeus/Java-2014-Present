@@ -26,6 +26,7 @@ public class GameBoard extends JPanel {
 	int height = 800;
 	boolean gameStarted = false;
 	boolean whiteTurn = true;
+	boolean gameOver = false;
 	GamePiece[][] pieces = new GamePiece[8][8];
 	GamePiece pSelected = null;
 
@@ -57,15 +58,44 @@ public class GameBoard extends JPanel {
 	}
 
 	public void fillBoard() {
-
+		// Fill board with empty spaces
 		for (int x = 0; x < pieces.length; x++) {
 			for (int y = 0; y < pieces[0].length; y++) {
-				if (y >= 0 && y < 2)
-					pieces[x][y] = new Knight(x * (width / 8), y * (height / 8), false, x, y);
-				else if(y>=6 && y < 8)
+				pieces[x][y] = new EmptySpace(x * (width / 8), y * (height / 8), x, y);
+			}
+		}
+		// Draw white side
+		for (int x = 0; x < pieces.length; x++) {
+			for (int y = 6; y <= 7; y++) {
+				if (y == 6)
 					pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), true, x, y);
-				else
-					pieces[x][y] = new EmptySpace(x * (width / 8), y * (height / 8), x, y);
+				else if (y == 7 && (x == 0 || x == 7))
+					pieces[x][y] = new Rook(x * (width / 8), y * (height / 8), true, x, y);
+				else if (y == 7 && (x == 1 || x == 6))
+					pieces[x][y] = new Knight(x * (width / 8), y * (height / 8), true, x, y);
+				else if (y == 7 && (x == 2 || x == 5))
+					pieces[x][y] = new Bishop(x * (width / 8), y * (height / 8), true, x, y);
+				else if (y == 7 && x == 3)
+					pieces[x][y] = new Queen(x * (width / 8), y * (height / 8), true, x, y);
+				else if (y == 7 && x == 4)
+					pieces[x][y] = new King(x * (width / 8), y * (height / 8), true, x, y);
+			}
+		}
+		// Draw Black side
+		for (int x = 0; x < pieces.length; x++) {
+			for (int y = 0; y <= 1; y++) {
+				if (y == 1)
+					pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), false, x, y);
+				else if (y == 0 && (x == 0 || x == 7))
+					pieces[x][y] = new Rook(x * (width / 8), y * (height / 8), false, x, y);
+				else if (y == 0 && (x == 1 || x == 6))
+					pieces[x][y] = new Knight(x * (width / 8), y * (height / 8), false, x, y);
+				else if (y == 0 && (x == 2 || x == 5))
+					pieces[x][y] = new Bishop(x * (width / 8), y * (height / 8), false, x, y);
+				else if (y == 0 && x == 3)
+					pieces[x][y] = new Queen(x * (width / 8), y * (height / 8), false, x, y);
+				else if (y == 0 && x == 4)
+					pieces[x][y] = new King(x * (width / 8), y * (height / 8), false, x, y);
 			}
 		}
 	}
@@ -94,7 +124,8 @@ public class GameBoard extends JPanel {
 		for (GamePiece[] gamePiece : pieces) {
 			for (GamePiece p : gamePiece) {
 				if (p != null && !p.getName().equals("null")) {
-					g.drawImage(p.getImage(),p.getPosX() * (width / 8), p.getPosY() * (height / 8), width/8, height/8,null);
+					g.drawImage(p.getImage(), p.getPosX() * (width / 8), p.getPosY() * (height / 8), width / 8,
+							height / 8, null);
 				}
 			}
 		}
@@ -117,11 +148,12 @@ public class GameBoard extends JPanel {
 				pSelected = piece;
 			}
 			if (x1 <= width && y1 <= height && piece != null && pSelected != null) {
-				if (!pSelected.getName().equals("null") && !piece.getName().equals("null") && (pSelected.isWhite() == piece.isWhite())) {
+				if (!pSelected.getName().equals("null") && !piece.getName().equals("null")
+						&& (pSelected.isWhite() == piece.isWhite())) {
 					// Move position of highlight box
 					x = (x1 - (x1 % (width / 8)));
 					y = (y1 - (y1 % (height / 8)));
-				} else{
+				} else {
 					GamePiece desiredMove = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
 					if (pSelected.isMoveValid(desiredMove, pieces)) {
 						GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),

@@ -31,7 +31,7 @@ public class Rook extends GamePiece {
 	public boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces) {
 		validMoves = findValidMoves(pieces);
 		for (GamePiece p : validMoves) {
-			if ((p.getPosX() == desiredMove.getPosX()) && (p.getPosY() == desiredMove.getPosY())) {
+			if (p==desiredMove) {
 				return true;
 			}
 		}

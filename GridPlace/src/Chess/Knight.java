@@ -29,7 +29,12 @@ public class Knight extends GamePiece {
 
 	@Override
 	public boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces) {
-		// TODO Auto-generated method stub
+		validMoves = findValidMoves(pieces);
+		for (GamePiece p : validMoves) {
+			if ((p.getPosX() == desiredMove.getPosX()) && (p.getPosY() == desiredMove.getPosY())) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -39,7 +44,31 @@ public class Knight extends GamePiece {
 		validMoves = new ArrayList<GamePiece>();
 		int posX = this.getPosX();
 		int posY = this.getPosY();
-		
+		if(posX<7){
+			if(posX < 6){
+				if(posY <7)
+					validMoves.add(pieces[posX+2][posY+1]);
+				if(posY >0)
+					validMoves.add(pieces[posX+2][posY-1]);
+			}
+			if(posY < 6)
+				validMoves.add(pieces[posX+1][posY+2]);
+			if(posY > 1)
+				validMoves.add(pieces[posX+1][posY-2]);
+		}
+		if(posX>0){
+			if(posX >1){
+				if(posY <7)
+					validMoves.add(pieces[posX-2][posY+1]);
+				if(posY >0)
+					validMoves.add(pieces[posX-2][posY-1]);
+			}
+			if(posY < 6)
+				validMoves.add(pieces[posX-1][posY+2]);
+			if(posY > 1)
+				validMoves.add(pieces[posX-1][posY-2]);
+		}
+			
 		return validMoves;
 	}
 }

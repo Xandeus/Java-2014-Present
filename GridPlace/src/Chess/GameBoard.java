@@ -1,4 +1,4 @@
-package Chess;
+package chess;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -61,11 +61,11 @@ public class GameBoard extends JPanel {
 		for (int x = 0; x < pieces.length; x++) {
 			for (int y = 0; y < pieces[0].length; y++) {
 				if (y >= 0 && y < 2)
-					pieces[x][y] = new Rook(x * (width / 8), y * (height / 8), Color.RED, x, y);
+					pieces[x][y] = new Knight(x * (width / 8), y * (height / 8), false, x, y);
 				else if(y>=6 && y < 8)
-					pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), Color.CYAN, x, y);
+					pieces[x][y] = new Pawn(x * (width / 8), y * (height / 8), true, x, y);
 				else
-					pieces[x][y] = new EmptySpace(x * (width / 8), y * (height / 8), null, x, y);
+					pieces[x][y] = new EmptySpace(x * (width / 8), y * (height / 8), x, y);
 			}
 		}
 	}
@@ -94,12 +94,10 @@ public class GameBoard extends JPanel {
 		for (GamePiece[] gamePiece : pieces) {
 			for (GamePiece p : gamePiece) {
 				if (p != null && !p.getName().equals("null")) {
-					g.setColor(p.getColor());
-					g.fillRect(p.getPosX() * (width / 8), p.getPosY() * (height / 8), 15, 15);
+					g.drawImage(p.getImage(),p.getPosX() * (width / 8), p.getPosY() * (height / 8), width/8, height/8,null);
 				}
 			}
 		}
-
 		// Selection square
 		g.setColor(Color.green);
 		if (pSelected != null)
@@ -115,11 +113,11 @@ public class GameBoard extends JPanel {
 			int x1 = event.getX() - 5;
 			int y1 = event.getY() - 32;
 			GamePiece piece = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
-			if (!piece.getName().equals("null") && ((whiteTurn && piece.getColor() == Color.CYAN) || (!whiteTurn && piece.getColor() != Color.CYAN))) {
+			if (!piece.getName().equals("null") && whiteTurn == piece.isWhite()) {
 				pSelected = piece;
 			}
 			if (x1 <= width && y1 <= height && piece != null && pSelected != null) {
-				if (!pSelected.getName().equals("null") && !piece.getName().equals("null") && (pSelected.getColor() == piece.getColor())) {
+				if (!pSelected.getName().equals("null") && !piece.getName().equals("null") && (pSelected.isWhite() == piece.isWhite())) {
 					// Move position of highlight box
 					x = (x1 - (x1 % (width / 8)));
 					y = (y1 - (y1 % (height / 8)));
@@ -127,7 +125,7 @@ public class GameBoard extends JPanel {
 					GamePiece desiredMove = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
 					if (pSelected.isMoveValid(desiredMove, pieces)) {
 						GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),
-								pSelected.getPosY() * (height / 8), null, pSelected.getPosX(), pSelected.getPosY());
+								pSelected.getPosY() * (height / 8), pSelected.getPosX(), pSelected.getPosY());
 						pieces[pSelected.getPosX()][pSelected.getPosY()] = temp;
 						pSelected.setPosX(desiredMove.getPosX());
 						pSelected.setPosY(desiredMove.getPosY());

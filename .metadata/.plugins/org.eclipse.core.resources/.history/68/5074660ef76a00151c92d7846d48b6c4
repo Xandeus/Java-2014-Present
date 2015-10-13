@@ -1,9 +1,0 @@
-package Chess;
-
-public class GamePiece {
-	int posX, posY;
-	public GamePiece(int x, int y){
-		posX = x;
-		posY = y;
-	}
-}

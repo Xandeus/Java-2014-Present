@@ -15,10 +15,10 @@ public class Bishop extends GamePiece {
 		try {
 			if (isWhite())
 				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\whiteBishop.png"));
+						"res/whiteBishop.png"));
 			else
 				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\blackBishop.png"));
+						"res/blackBishop.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

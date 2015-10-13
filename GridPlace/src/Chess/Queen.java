@@ -14,10 +14,10 @@ public class Queen extends GamePiece {
 		try {
 			if (isWhite())
 				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\whiteQueen.png"));
+						"res/whiteQueen.png"));
 			else
 				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\blackQueen.png"));
+						"res/blackQueen.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

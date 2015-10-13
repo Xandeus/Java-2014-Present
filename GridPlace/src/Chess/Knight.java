@@ -13,10 +13,10 @@ public class Knight extends GamePiece {
 		try {
 			if (isWhite())
 				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\whiteKnight.png"));
+						"res/whiteKnight.png"));
 			else
 				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\blackKnight.png"));
+						"res/blackKnight.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

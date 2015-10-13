@@ -13,11 +13,9 @@ public class King extends GamePiece {
 		super(x, y, isWhite, posX, posY);
 		try {
 			if (isWhite())
-				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\whiteKing.png"));
+				image = ImageIO.read(new File("res/whiteKing.png"));
 			else
-				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\blackKing.png"));
+				image = ImageIO.read(new File("res/blackKing.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -36,10 +34,14 @@ public class King extends GamePiece {
 				for (GamePiece[] x : pieces)
 					for (GamePiece y : x) {
 						if (y != this && !y.getName().equals("null") && y.isWhite() != this.isWhite()) {
-							otherMoves = y.findValidMoves(pieces);
-							for (GamePiece move : otherMoves)
+							if (y instanceof Pawn)
+								otherMoves = ((Pawn) y).findValidAttacks(pieces);
+							else
+								otherMoves = y.findValidMoves(pieces);
+							for (GamePiece move : otherMoves) {
 								if (move == desiredMove)
 									return false;
+							}
 
 						}
 					}

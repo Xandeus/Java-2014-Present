@@ -15,10 +15,10 @@ public class Rook extends GamePiece {
 		try {
 			if (isWhite())
 				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\whiteRook.png"));
+						"res/whiteRook.png"));
 			else
 				image = ImageIO.read(new File(
-						"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\GridPlace\\src\\resources\\blackRook.png"));
+						"res/blackRook.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

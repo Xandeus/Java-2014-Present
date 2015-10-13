@@ -17,13 +17,13 @@ public class Client extends JFrame {
 	private String serverIP;
 	private Socket connection;
 	private boolean pConnected = false;
-	private Player pClient = new Player(0, 0);
+	private Player pClient = new Player(780, 0);
 	private Player pServer;
-	private ArrayList<NPC> npcs;
+	private GameBall gameBall;
 
 	// Creates GUI assigns IP from host
 	public Client(String host) {
-		super("Box Party - CLIENT");
+		super("DONG - CLIENT");
 		serverIP = host;
 		mainFrame = new DrawPane();
 		chatWindow = new JTextArea();
@@ -31,7 +31,7 @@ public class Client extends JFrame {
 		addMouseListener(new MouseAL());
 		setPreferredSize(new Dimension(800,600));
 		setAlwaysOnTop(true);
-		setLocation(100, 150);
+		setLocation(700, 150);
 		pack();
 		setVisible(true);
 		setResizable(false);
@@ -69,21 +69,13 @@ public class Client extends JFrame {
 		public void keyPressed(KeyEvent event) {
 
 			int keyCode = event.getKeyCode();
-			if (keyCode == event.VK_LEFT) {
-				pClient.setXVel(-1);
-				pClient.setYVel(0);
-			}
-			if (keyCode == event.VK_RIGHT) {
-				pClient.setXVel(1);
-				pClient.setYVel(0);
-			}
 			if (keyCode == event.VK_UP) {
 				pClient.setYVel(-1);
-				pClient.setXVel(0);
+				//pClient.setXVel(0);
 			}
 			if (keyCode == event.VK_DOWN) {
 				pClient.setYVel(1);
-				pClient.setXVel(0);
+				//pClient.setXVel(0);
 			}
 			repaint();
 		}
@@ -100,16 +92,13 @@ public class Client extends JFrame {
 		public void paintComponent(Graphics g) {
 			// draw on g here e.g.
 			g.setColor(Color.BLUE);
-			g.fillRect(pClient.getX(), pClient.getY(), 10, 10);
+			g.fillRect(pClient.getX(), pClient.getY(), pClient.getWidth(), pClient.getHeight());
 			if (pServer != null) {
 				g.setColor(Color.RED);
-				g.fillRect(pServer.getX(), pServer.getY(), 10, 10);
+				g.fillRect(pServer.getX(), pServer.getY(), pServer.getWidth(), pServer.getHeight());
 			}
-			if (pConnected && npcs != null) {
-				for (NPC npc : npcs) {
-					g.setColor(npc.getColor());
-					g.fillRect(npc.getX(), npc.getY(), 10, 10);
-				}		
+			if (pConnected) {
+		
 				sendMessage(pClient);
 			}
 			gameLoop();
@@ -163,8 +152,9 @@ public class Client extends JFrame {
 				temp = input.readObject();
 				if (temp instanceof Player)
 					pServer = (Player) temp;
-				else if (temp instanceof ArrayList)
-					npcs = (ArrayList<NPC>) temp;
+				if (temp instanceof GameBall)
+					gameBall = (GameBall) temp;
+
 			} catch (ClassNotFoundException classNotFoundException) {
 				showMessage("\n Object not found");
 			}

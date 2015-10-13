@@ -4,6 +4,7 @@ public class Player implements Serializable{
 	private int posX;
 	private int posY;
 	private int xVel,yVel;
+	private int width =10, height = 100;
 	private float tick = 0;
 	public Player(int x, int y){
 		posX = x;
@@ -22,6 +23,12 @@ public class Player implements Serializable{
 	}
 	public int getYVel(){
 		return yVel;
+	}
+	public int getWidth(){
+		return width;
+	}
+	public int getHeight(){
+		return height;
 	}
 	public void setX(int x){
 		posX = x;

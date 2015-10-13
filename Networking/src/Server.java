@@ -16,9 +16,9 @@ public class Server extends JFrame {
 	private ObjectInputStream input;
 	private ServerSocket server;
 	private Socket connection;
-	private Player pServer = new Player(0, 0);
+	private Player pServer = new Player(20, 0);
+	private GameBall gBall = new GameBall(400,300);
 	private Player pClient;
-	private ArrayList<NPC> npcs = new ArrayList<NPC>();
 	private boolean pConnected = false;
 
 	public Server() {
@@ -38,13 +38,9 @@ public class Server extends JFrame {
 		setBackground(Color.black);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(mainFrame);
-		createNPCS(10);
 	}
 
-	public void createNPCS(int num) {
-		for (int i = 0; i < num; i++)
-			npcs.add(new NPC((int) (Math.random() * 400), (int) (Math.random() * 400)));
-	}
+
 
 	public class MouseAL implements MouseListener {
 		public void mousePressed(MouseEvent e) {
@@ -70,14 +66,6 @@ public class Server extends JFrame {
 		@Override
 		public void keyPressed(KeyEvent event) {
 			int keyCode = event.getKeyCode();
-			if (keyCode == event.VK_LEFT) {
-				pServer.setXVel(-1);
-				pServer.setYVel(0);
-			}
-			if (keyCode == event.VK_RIGHT) {
-				pServer.setXVel(1);	
-				pServer.setYVel(0);
-				}
 			if (keyCode == event.VK_UP) {
 				pServer.setYVel(-1);	
 				pServer.setXVel(0);}
@@ -102,28 +90,42 @@ public class Server extends JFrame {
 			// draw on g here e.g.
 			g.setColor(Color.RED);
 
-			g.fillRect(pServer.getX(), pServer.getY(), 10, 10);
+			g.fillRect(pServer.getX(), pServer.getY(), pServer.getWidth(), pServer.getHeight());
+			g.setColor(Color.orange);
+			g.fillRect(gBall.getX(), gBall.getY(), gBall.getWidth(), gBall.getHeight());
 			if (pClient != null) {
 				g.setColor(Color.BLUE);
-				g.fillRect(pClient.getX(), pClient.getY(), 10, 10);
+				g.fillRect(pClient.getX(), pClient.getY(), pClient.getWidth(), pClient.getHeight());
 			}
-			if (pConnected)
-				for (NPC npc : npcs) {
-					g.setColor(npc.getColor());
-					g.fillRect(npc.getX(), npc.getY(), 10, 10);
-					npc.randomMove();
-				}
+
 			
 			gameLoop();
 		}
 	}
 	public void gameLoop(){
 		pServer.move();
+		gBall.move();
 		repaint();
 		if(pConnected){
-			sendMessage(npcs);
 			sendMessage(pServer);
 		}
+		//Left paddle
+		if((gBall.getX() <= (pServer.getX() + pServer.getWidth()) && (gBall.getY() >= pServer.getY() && gBall.getY() <= (pServer.getY() + pServer.getHeight())))){
+			gBall.setXVel(1);
+		}
+		//Right paddle
+//		else if((gBall.getX()+gBall.getWidth() >= pServer.getX() && gBall.getY() >= pServer.getY() && gBall.getY() <= (pServer.getY() + pServer.getHeight()))){
+//			gBall.setXVel(-1);
+//		}
+		if(gBall.getY() <=0)
+			gBall.setYVel(1);
+		else if(gBall.getY() >=590)
+			gBall.setYVel(-1);
+		if(gBall.getX() >790){
+			gBall.setX(400);
+		}
+		if(gBall.getX() < 10)
+			gBall.setX(400);
 	}
 
 	// Set up server
@@ -151,7 +153,8 @@ public class Server extends JFrame {
 		showMessage("Waiting for connection... \n");
 		connection = server.accept();
 		showMessage(" Now connected to " + connection.getInetAddress().getHostName());
-
+		gBall.setXVel(1);
+		gBall.setYVel(1);
 	}
 
 	// Get stream to send and receive data

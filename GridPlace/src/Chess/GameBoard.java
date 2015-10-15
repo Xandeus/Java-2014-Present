@@ -2,22 +2,22 @@ package chess;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class GameBoard extends JPanel {
 	HandlerClass handler = new HandlerClass();
@@ -35,26 +35,37 @@ public class GameBoard extends JPanel {
 	}
 
 	static JTextField text = new JTextField();
-
+	static JTextArea gameLog = new JTextArea();
+	static JScrollPane scrollPane = new JScrollPane(gameLog);
 	static JFrame frame = new JFrame("CHESS");
-
+	static final int GAMELOG_WINDOW_LIMIT = 10;
+	  
 	public static void frame() throws InterruptedException {
 
 		GameBoard game = new GameBoard();
-		Font f = new Font("Engravers MT", Font.BOLD, 23);
+		Font logFont = new Font("Engravers MT", Font.PLAIN, 11);
+		Font turnFont = new Font("Engravers MT", Font.BOLD, 24);
 		text.setEditable(false);
-		text.setBackground(Color.GRAY);
-		text.setFont(f);
-		text.setText("Under Construction");
+		text.setBackground(Color.WHITE);
+		text.setFont(turnFont);
+		text.setText("White Move");
+		gameLog.setEditable(false);
+		gameLog.setBackground(Color.WHITE);
+		gameLog.setFont(logFont);
+		scrollPane.setPreferredSize(new Dimension(200,10));
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		frame.add(text, BorderLayout.SOUTH);
+		frame.add(scrollPane, BorderLayout.EAST);
 		frame.add(game);
+		frame.pack();
 		frame.setResizable(false);
-		frame.setSize(900, 870);
+		frame.setSize(1000, 870);
 		frame.setLocation(300, 10);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.addMouseListener(game.handler);
 		frame.addMouseMotionListener(game.handler);
+		
 	}
 
 	public void fillBoard() {
@@ -107,7 +118,6 @@ public class GameBoard extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		boolean colorWhite = true;
-
 		for (int y = 0; y < height; y += (height / 8)) {
 			for (int x = 0; x < width; x += (width / 8)) {
 				if (colorWhite) {
@@ -163,14 +173,29 @@ public class GameBoard extends JPanel {
 						pSelected.setPosY(desiredMove.getPosY());
 						pieces[desiredMove.getPosX()][desiredMove.getPosY()] = pSelected;
 
+						if(desiredMove.getName().equals("null"))
+							gameLog.append(getColor(whiteTurn) + pSelected.getName() + " moved to " + desiredMove.getPosX() + " " + desiredMove.getPosY() + "\n");
+						
+						else
+							gameLog.append(getColor(whiteTurn) + pSelected.getName() + " capured " + getColor(!whiteTurn) + desiredMove.getName() + " at " + desiredMove.getPosX() + " " + desiredMove.getPosY() + "\n");
 						pSelected = null;
 						whiteTurn = !whiteTurn;
+						
 					}
 				}
 			}
+			if(whiteTurn)
+				text.setText("White Move");
+			else
+				text.setText("Black Move");
 			repaint();
 		}
-
+		public String getColor(boolean color){
+			if(color)
+				return "White ";
+			else
+				return "Black ";
+		}
 		private GamePiece getArrayPos(int x, int y) {
 			// TODO Auto-generated method stub
 			for (GamePiece[] gamePiece : pieces) {

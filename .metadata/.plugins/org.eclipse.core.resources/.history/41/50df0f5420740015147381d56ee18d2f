@@ -1,0 +1,25 @@
+package minesweeper;
+
+public class GameObject {
+	int posX, posY;
+	boolean isHidden = true;
+	boolean isMine;
+	public GameObject(int x, int y,boolean isMine){
+		posX = x;
+		posY = y;
+		this.isMine = isMine;
+	}
+	public boolean getIsMine(){
+		return isMine;
+	}
+	public boolean getHidden(){
+		return isHidden;
+	}
+	public int getX(){
+		return posX;
+	}
+	public int getY(){
+		return posY;
+	}
+	
+}

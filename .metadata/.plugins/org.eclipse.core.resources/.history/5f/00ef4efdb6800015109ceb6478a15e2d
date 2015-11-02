@@ -1,0 +1,10 @@
+package pathFinder;
+
+public class Organism extends Cube {
+
+	public Organism(int x, int y) {
+		super(x, y);
+		// TODO Auto-generated constructor stub
+	}
+
+}

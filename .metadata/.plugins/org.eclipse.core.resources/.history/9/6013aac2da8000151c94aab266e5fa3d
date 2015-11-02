@@ -1,0 +1,26 @@
+package pathFinder;
+
+public class Organism extends Cube {
+
+	public Organism(int x, int y, boolean bool) {
+		super(x, y, bool);
+		// TODO Auto-generated constructor stub
+	}
+
+	public void leftMotor() {
+
+	}
+
+	public void rightMotor() {
+
+	}
+
+	public void topMotor() {
+
+	}
+
+	public void bottomMotor() {
+
+	}
+
+}

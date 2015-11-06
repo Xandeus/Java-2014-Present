@@ -54,10 +54,10 @@
 <fullyQualifiedTypeName name="java.io.IOException"/>
 <fullyQualifiedTypeName name="javax.swing.SwingUtilities"/>
 <fullyQualifiedTypeName name="javax.swing.JPanel"/>
-<fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="javax.print.attribute.standard.Destination"/>
 <fullyQualifiedTypeName name="pathFinder.Cube"/>
 <fullyQualifiedTypeName name="java.awt.event.KeyListener"/>
 <fullyQualifiedTypeName name="java.awt.BorderLayout"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="java.awt.Color"/>
 </qualifiedTypeNameHistroy>

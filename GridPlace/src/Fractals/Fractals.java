@@ -24,10 +24,15 @@ public class Fractals extends JPanel {
 	HandlerClass handler = new HandlerClass();
 	static JFrame frame = new JFrame("Fractals");
 	int count = 0;
-	int xVariance = 10, yVariance = 10;
+	int xVariance = 0, yVariance = 0;
+	int rLimit = 90;
+	int dX2 = 5;
+	int dY2 = 5;
 	int numBranches = 2;
-	int size = 50;
+	int size = 100;
 	int incVal = 1;
+    float theta=0;
+
 	boolean zoom = false;
 	boolean rave = false;
 	boolean forceMaxB = false;
@@ -69,9 +74,10 @@ public class Fractals extends JPanel {
 		g.drawString("Size: " + size, 0, 10);
 		g.drawString("X Variance: " + xVariance, 0, 20);
 		g.drawString("Y Variance: " + yVariance, 0, 30);
-		g.drawString("Number of allowed Branches: " + numBranches, 0, 40);
-		g.drawString("Maximize Branches: " + forceMaxB, 0, 50);
-		g.drawString("Is fall: " + isFall, 0, 60);
+		g.drawString("Rotation Limit: " + rLimit, 0, 40);
+		g.drawString("Number of allowed Branches: " + numBranches, 0, 50);
+		g.drawString("Maximize Branches: " + forceMaxB, 0, 60);
+		g.drawString("Is fall: " + isFall, 0, 70);
 
 		if (count < shapes.size() && shapes.size() > 0) {
 			shapes.get(count).changeState();
@@ -100,70 +106,57 @@ public class Fractals extends JPanel {
 				// g.drawOval(c.getX(), c.getY(), c.getR(), c.getR());
 				g.drawLine(c.getX(), c.getY(), c.getX() + c.getDX(), c.getY() - c.getDY());
 				if (zoom && c.getDY() <= 10) {
-					c.change(rand.nextInt(2) + 1, rand.nextInt(5) - 2, 0);
+					// c.change(rand.nextInt(2) + 1, rand.nextInt(5) - 2, 0);
+					c.alter(rand.nextInt(3), 0);
 				}
 			}
 		}
 
 	}
 
+	public int getDistance(int x, int y, int x1, int y1) {
+		int distance = 0;
+		distance = (int) (Math.sqrt(Math.pow(x1 - x, 2) + Math.pow(y1 - y, 2)));
+		return distance;
+	}
+
 	// v is variance
 	public void drawLine(int x, int y, int dX, int dY, int xV, int yV) {
 		Color color;
-		if (dY > 10)
+		int t;
+		if (getDistance(x,y,x+dX,y-dY) > 10)
 			color = new Color(165 + (rand.nextInt(21) - 10), 42 + (rand.nextInt(21) - 10), 0);
 		else if (isFall)
 			color = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), 0);
 		else
 			color = new Color(0, (int) (Math.random() * 255), 0);
 		shapes.add(new Shape(x, y, dX, dY, color));
-		if (dY > 10) {
+		if (getDistance(x, y, x + dX, y - dY) > 2) {
 			int totalBranches;
 			if (forceMaxB)
 				totalBranches = numBranches;
 			else
 				totalBranches = rand.nextInt(numBranches) + 1;
-			drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV), dY - (rand.nextInt(yV * 2 + 1) + 5), xV, yV);
-			if (totalBranches > 1) {
-				drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV), dY - (rand.nextInt(yV * 2 + 1) + 5), xV,
+			t = rand.nextInt(11)-5;
+			dX2 = ((int)(dX*Math.cos(t*Math.PI/180)))-((int)(dY * Math.sin(t*Math.PI/180)));
+			dY2 = ((int)(dX*Math.sin(t*Math.PI/180)))+((int)(dY * Math.cos(t*Math.PI/180))); 
+			dX2/=2f-(xV*.1f);
+			dY2/=2f-(yV*.1f);
+			drawLine(x + dX, y - dY, dX2, dY2, xV,
+					yV);
+			for (int i = 0; i < totalBranches; i++){
+				//System.out.println("DY2: " + dY2);
+				t = (rand.nextInt(rLimit*2+1)-rLimit);
+				dX2 = ((int)(dX*Math.cos(t*Math.PI/180)))-((int)(dY * Math.sin(t*Math.PI/180)));
+				dY2 = ((int)(dX*Math.sin(t*Math.PI/180)))+((int)(dY * Math.cos(t*Math.PI/180))); 
+				dX2/=2;
+				dY2/=2;
+				drawLine(x + dX, y - dY, dX2, dY2, xV,
 						yV);
-				if (totalBranches > 2) {
-					drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV), dY - (rand.nextInt(yV * 2 + 1) + 5),
-							xV, yV);
-					if (totalBranches > 3) {
-						drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV),
-								dY - (rand.nextInt(yV * 2 + 1) + 5), xV, yV);
-						if (totalBranches > 4) {
-							drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV),
-									dY - (rand.nextInt(yV * 2 + 1) + 5), xV, yV);
-							if (totalBranches > 5) {
-								drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV),
-										dY - (rand.nextInt(yV * 2 + 1) + 5), xV, yV);
-								if (totalBranches > 6) {
-									drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV),
-											dY - (rand.nextInt(yV * 2 + 1) + 5), xV, yV);
-									if (totalBranches > 7) {
-										drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV),
-												dY - (rand.nextInt(yV * 2 + 1) + 5), xV, yV);
-										if (totalBranches > 8) {
-											drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV),
-													dY - (rand.nextInt(yV * 2 + 1) + 5), xV, yV);
-											if (totalBranches > 9) {
-												drawLine(x + dX, y - dY, dX - (rand.nextInt(xV * 2 + 1) - xV),
-														dY - (rand.nextInt(yV * 2 + 1) + 5), xV, yV);
-
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
 			}
+			
 
 		}
-
 	}
 
 	public void drawShape(int x, int y, int r) {
@@ -202,7 +195,7 @@ public class Fractals extends JPanel {
 				drawLine(x, y, 0, size, xVariance, yVariance);
 			}
 			if (event.getButton() == MouseEvent.BUTTON2) {
-
+				System.out.println(getDistance(5, 5, 0, 10));
 			}
 
 		}
@@ -254,15 +247,19 @@ public class Fractals extends JPanel {
 				xVariance += incVal;
 			}
 			if (keyCode == event.VK_S) {
-				if (xVariance > 1)
-					xVariance -= incVal;
+				xVariance -= incVal;
 			}
 			if (keyCode == event.VK_E) {
 				yVariance += incVal;
 			}
 			if (keyCode == event.VK_D) {
-				if (yVariance > 1)
-					yVariance -= incVal;
+				yVariance -= incVal;
+			}
+			if (keyCode == event.VK_UP) {
+				rLimit += incVal;
+			}
+			if (keyCode == event.VK_DOWN) {
+				rLimit -= incVal;
 			}
 			if (keyCode == event.VK_R) {
 				if (numBranches < 10)

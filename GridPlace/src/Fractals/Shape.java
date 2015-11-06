@@ -61,6 +61,10 @@ public class Shape {
 		this.y+=y;
 		this.r+=r;
 	}
+	public void alter(int x, int y){
+		this.dX+=x;
+		this.dY+=y;
+	}
 	public boolean isActive(){
 		return isActive;
 	}

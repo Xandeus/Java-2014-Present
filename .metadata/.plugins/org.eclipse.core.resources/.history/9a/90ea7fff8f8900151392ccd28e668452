@@ -1,0 +1,8 @@
+package space;
+
+public interface CelestialBody {
+	public int getDensity();
+	public int getVolume();
+	public int getMass();
+	public int getColor();
+}

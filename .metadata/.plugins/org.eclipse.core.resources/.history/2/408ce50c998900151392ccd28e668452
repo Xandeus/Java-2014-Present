@@ -1,0 +1,11 @@
+package space;
+
+import java.awt.Color;
+
+public interface CelestialBody {
+	public int getRadius();
+	public int getDensity();
+	public int getVolume();
+	public int getMass();
+	public Color getColor();
+}

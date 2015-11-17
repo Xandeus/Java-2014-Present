@@ -1,0 +1,25 @@
+package space;
+
+public class Planet implements CelestialBody{
+	public Planet(int ){
+		
+	}
+	
+	public int getLocation() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	public int getMass() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	public int getDensity() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getVolume() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+}

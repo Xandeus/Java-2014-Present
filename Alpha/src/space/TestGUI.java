@@ -6,10 +6,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,12 +23,14 @@ public class TestGUI extends JPanel {
 	ArrayList<CelestialBody> bodies = new ArrayList<CelestialBody>();
 	ArrayList<ArrayList<CelestialBody>> systems = new ArrayList<ArrayList<CelestialBody>>();
 	ArrayList<Point> systemLocations = new ArrayList<Point>();
+	Random rand = new Random();
 	public int view = 3;
 	public final int INDIVIDUALV = 0, EXPANDEDV = 1, SYSTEMV = 2, SECTORV = 3;
 	int mX, mY;
 	int highlightX, highlightY;
 	int highlightR;
 	boolean temp = false;
+	boolean systemH = false;
 	public static void main(String[] args) throws InterruptedException {
 		frame();
 	}
@@ -44,6 +49,7 @@ public class TestGUI extends JPanel {
 		frame.setVisible(true);
 		frame.addMouseListener(game.handler);
 		frame.addMouseMotionListener(game.handler);
+		frame.addKeyListener(game.handler);
 	}
 	@Override
 	public void paint(Graphics g) {
@@ -53,8 +59,6 @@ public class TestGUI extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.black);
 		g2d.fillRect(0, 0, frame.getWidth(), frame.getHeight());
-		g2d.setColor(Color.BLUE);
-		g2d.fillOval(0, 0, 10, 10);
 		switch(view){
 		case SYSTEMV:
 			for(CelestialBody b : bodies){
@@ -84,15 +88,19 @@ public class TestGUI extends JPanel {
 
 		
 	}
-	public void generateSolarSystem(){
-		bodies.add(new Star());
+	public ArrayList<CelestialBody> generateSolarSystem(){
+		ArrayList<CelestialBody> b = new  ArrayList<CelestialBody>();
+		b.add(new Star());
 		for(int i = 0;i < 5;i++){
-			bodies.add(new Planet());
+			b.add(new Planet());
 		}
+		systems.add(b);
+		System.out.println("System generated!");
+		return b;
 	}
 	public void generateSystems(){
 		for(int i = 0;i<10;i++){
-			systemLocations.add(new Point((int)(Math.random()*frame.getWidth()), (int)(Math.random()*frame.getHeight())));
+			systemLocations.add(new Point((rand.nextInt((frame.getWidth())-11)), rand.nextInt((frame.getHeight())-11)));
 		}
 	}
 	public boolean checkBodyCollision(int x, int y){
@@ -101,6 +109,7 @@ public class TestGUI extends JPanel {
 				highlightX = b.getWindowLocX();
 				highlightY = b.getWindowLocY();
 				highlightR = b.getRadius()*2;
+				repaint();
 				return true;
 			}
 		}
@@ -117,6 +126,9 @@ public class TestGUI extends JPanel {
 				highlightY = p.y;
 				highlightR = 10;
 				repaint();
+				systemH = true;
+				if(systems.size() > systemLocations.indexOf(p))
+					bodies = systems.get(systemLocations.indexOf(p));
 				return true;
 			}	
 		}
@@ -124,10 +136,11 @@ public class TestGUI extends JPanel {
 		highlightX = 0;
 		highlightY = 0;
 		highlightR = 0;
-		
+		systemH = false;
+		bodies = null;
 		return false;
 	}
-	private class HandlerClass implements MouseListener, MouseMotionListener {
+	private class HandlerClass implements MouseListener, MouseMotionListener, KeyListener {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
@@ -140,7 +153,6 @@ public class TestGUI extends JPanel {
 			// TODO Auto-generated method stub
 			mX = e.getX()-3;
 			mY = e.getY()-30;
-			System.out.println(mX + " " + mY);
 			switch(view){
 			case SYSTEMV:
 				checkBodyCollision(mX,mY);
@@ -157,9 +169,11 @@ public class TestGUI extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-			highlightX = e.getX()-3;
-			highlightY = e.getY()-30;
-			highlightR = 10;
+			if(systemH && view != SYSTEMV){
+				if(bodies == null)
+					bodies = generateSolarSystem();
+				view = SYSTEMV;
+			}
 			repaint();
 		}
 
@@ -188,6 +202,30 @@ public class TestGUI extends JPanel {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getKeyCode() == e.VK_BACK_SPACE){
+				if(view == SYSTEMV){
+					view = SECTORV;
+					repaint();
+				}
+				
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
 			
 		}

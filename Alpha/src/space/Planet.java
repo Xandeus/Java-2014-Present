@@ -5,6 +5,7 @@ import java.awt.Color;
 public class Planet implements CelestialBody {
 	Color color = new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256));
 	int radius;
+	int density = (int)(Math.random()*1000), volume = (int)(Math.random()*1000), mass = (int)(Math.random()*1000);
 	int wLocX, wLocY;
 
 	public Planet() {
@@ -31,24 +32,26 @@ public class Planet implements CelestialBody {
 	public Color getColor() {
 		return color;
 	}
-
+	public String getType(){
+		return "Planet";
+	}
 	public int getRadius() {
 		return radius;
 	}
 
 	public int getMass() {
 		// TODO Auto-generated method stub
-		return 0;
+		return mass;
 	}
 
 	public int getDensity() {
 		// TODO Auto-generated method stub
-		return 0;
+		return density;
 	}
 
 	public int getVolume() {
 		// TODO Auto-generated method stub
-		return 0;
+		return volume;
 	}
 
 	// Sets gui window location x

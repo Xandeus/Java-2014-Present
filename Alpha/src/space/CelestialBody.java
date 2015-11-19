@@ -11,5 +11,6 @@ public interface CelestialBody {
 	public int getDensity();
 	public int getVolume();
 	public int getMass();
+	public String getType();
 	public Color getColor();
 }

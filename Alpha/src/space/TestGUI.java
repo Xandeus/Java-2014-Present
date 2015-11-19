@@ -29,8 +29,13 @@ public class TestGUI extends JPanel {
 	int mX, mY;
 	int highlightX, highlightY;
 	int highlightR;
+	int numSystems = 50;
+	int systemPoint;
 	boolean temp = false;
 	boolean systemH = false;
+	boolean infoTabActive = false;
+	Point infoTabLoc = new Point();
+	CelestialBody body;
 	public static void main(String[] args) throws InterruptedException {
 		frame();
 	}
@@ -61,6 +66,10 @@ public class TestGUI extends JPanel {
 		g2d.fillRect(0, 0, frame.getWidth(), frame.getHeight());
 		switch(view){
 		case SYSTEMV:
+			for(int i = 0;i<1000;i++){
+				g2d.setColor(new Color(0,0,(int)(Math.random()*256)));
+				g2d.drawRect((int)(Math.random()*1200), (int)(Math.random()*800), 2, 2);
+			}
 			for(CelestialBody b : bodies){
 				int c = b.getRadius() *2;
 				g2d.setColor(b.getColor());
@@ -71,8 +80,8 @@ public class TestGUI extends JPanel {
 			break;
 		case SECTORV:
 			for(Point p : systemLocations){
-				g.setColor(Color.white);
-				g.fillRect(p.x, p.y, 10, 10);
+				g2d.setColor(Color.white);
+				g2d.fillRect(p.x, p.y, 10, 10);
 			}
 			break;
 		}
@@ -85,7 +94,15 @@ public class TestGUI extends JPanel {
 			g2d.drawRect(highlightX, highlightY, highlightR, highlightR);
 			break;
 		}
-
+		if(infoTabActive){
+			g2d.setColor(Color.green);
+			g2d.fillRect(infoTabLoc.x, infoTabLoc.y, 100, 150);
+			g2d.setColor(Color.black);
+			g2d.drawString(body.getType(), infoTabLoc.x+10,infoTabLoc.y + 10);
+			g2d.drawString("Mass: " + body.getMass(), infoTabLoc.x+10,infoTabLoc.y +20);
+			g2d.drawString("Volume: " + body.getVolume(), infoTabLoc.x+10,infoTabLoc.y + 30);
+			g2d.drawString("Density: " + body.getDensity(), infoTabLoc.x+10,infoTabLoc.y + 40);
+		}
 		
 	}
 	public ArrayList<CelestialBody> generateSolarSystem(){
@@ -99,8 +116,9 @@ public class TestGUI extends JPanel {
 		return b;
 	}
 	public void generateSystems(){
-		for(int i = 0;i<10;i++){
+		for(int i = 0;i<numSystems;i++){
 			systemLocations.add(new Point((rand.nextInt((frame.getWidth())-11)), rand.nextInt((frame.getHeight())-11)));
+			generateSolarSystem();
 		}
 	}
 	public boolean checkBodyCollision(int x, int y){
@@ -109,6 +127,8 @@ public class TestGUI extends JPanel {
 				highlightX = b.getWindowLocX();
 				highlightY = b.getWindowLocY();
 				highlightR = b.getRadius()*2;
+				if(!infoTabActive)
+					body = b;
 				repaint();
 				return true;
 			}
@@ -127,8 +147,7 @@ public class TestGUI extends JPanel {
 				highlightR = 10;
 				repaint();
 				systemH = true;
-				if(systems.size() > systemLocations.indexOf(p))
-					bodies = systems.get(systemLocations.indexOf(p));
+				systemPoint = systemLocations.indexOf(p);
 				return true;
 			}	
 		}
@@ -169,10 +188,22 @@ public class TestGUI extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-			if(systemH && view != SYSTEMV){
-				if(bodies == null)
-					bodies = generateSolarSystem();
+			mX = e.getX()-3;
+			mY = e.getY()-30;
+			infoTabActive = false;
+			if(view == SECTORV && checkSystemCollision(mX,mY)){
+				bodies = systems.get(systemPoint);
 				view = SYSTEMV;
+			}
+			else if(view == SYSTEMV && checkBodyCollision(mX,mY)){
+				infoTabActive = true;
+				infoTabLoc.setLocation(body.getWindowLocX() + body.getRadius()*2 + 5, body.getWindowLocY()); 
+			}
+			if(e.getButton() == e.BUTTON3){
+				if(view == SYSTEMV){
+					view = SECTORV;
+					repaint();
+				}
 			}
 			repaint();
 		}

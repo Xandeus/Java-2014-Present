@@ -1,7 +1,0 @@
-package space;
-
-public interface CelestialBody {
-	public int getSize();
-	public int getDensity();
-	public int getLocation();
-}

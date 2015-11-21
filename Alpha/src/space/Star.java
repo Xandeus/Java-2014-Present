@@ -6,7 +6,7 @@ public class Star implements CelestialBody{
 	int radius;
 	int wLocX, wLocY;
 	int density = (int)(Math.random()*1000), volume = (int)(Math.random()*1000), mass = (int)(Math.random()*1000);
-	Color color = new Color((int)(Math.random()*256),(int)(Math.random()*256),0);
+	Color color = Color.getHSBColor((int)(Math.random()*20)*.01f, 1f, 1f);
 	public Star(){
 		radius = ((int)(Math.random()*51)+50);
 	}
@@ -29,6 +29,15 @@ public class Star implements CelestialBody{
 	public String getType(){
 		return "Star";
 	}
+	public String getResources(){
+		return "N/A";
+	}
+	public int getResourceTotal(){
+		return 0;
+	}
+	public boolean hasAtmosphere(){
+		return false;
+	}
 	public int getRadius(){
 		return radius;
 	}
@@ -42,7 +51,7 @@ public class Star implements CelestialBody{
 	}
 	public int getVolume() {
 		// TODO Auto-generated method stub
-		return volume;
+		return (int)((4.0/3.0)*Math.PI*Math.pow(radius, 3));
 	}
 	//Sets gui window location x
 	public void setWindowLocX(int x){

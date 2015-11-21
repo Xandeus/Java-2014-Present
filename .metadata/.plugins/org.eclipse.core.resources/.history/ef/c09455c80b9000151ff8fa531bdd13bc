@@ -1,0 +1,17 @@
+package space;
+
+public class MiningFacility implements Building {
+
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void function() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

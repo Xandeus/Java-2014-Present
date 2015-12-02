@@ -1,0 +1,14 @@
+package space;
+
+public class Player extends Character{
+	int playerHealth;
+	public Player(int x, int y,int w,int h,CelestialBody b){
+		super(x,y,w,h,b);	
+	}
+	public int getPlayerHealth(){
+		return playerHealth;
+	}
+	public void decreaseHealth(int x){
+		playerHealth-=x;
+	}
+}

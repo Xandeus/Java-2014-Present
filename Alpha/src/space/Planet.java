@@ -14,13 +14,14 @@ public class Planet implements CelestialBody {
 	int atmoSphere = (int)(Math.random()*2);
 	String pType;
 	public Planet() {
-		radius = ((int) (Math.random() * 21) + 10);
 		if((int)(Math.random()*2)==0){
 			pType = "Terrestrial";
+			radius = ((int) (Math.random() * 11) + 5);
 			planetResources[0] = resources[(int)(Math.random()*5)];
 		}
 		else{
 			pType = "Gas";
+			radius = ((int) (Math.random() * 11) + 15);
 			planetResources[0] ="N/A";
 		}
 	}

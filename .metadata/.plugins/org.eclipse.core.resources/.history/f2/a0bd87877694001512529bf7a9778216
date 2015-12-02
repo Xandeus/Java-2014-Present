@@ -1,0 +1,16 @@
+package space;
+
+import java.awt.Image;
+
+public class BackgroundStar {
+	int size;
+	int posX;
+	int posY;
+	Image image;
+	public BackgroundStar(int x, int y, int s,Image im){
+		posX = x;
+		posY = y;
+		size = s;
+		
+	}
+}

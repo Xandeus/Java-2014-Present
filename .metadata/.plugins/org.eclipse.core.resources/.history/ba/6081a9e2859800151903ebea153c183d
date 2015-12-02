@@ -1,0 +1,23 @@
+package space;
+
+import java.awt.Point;
+
+public class Enemy extends Character{
+	Point movementPoint;
+	public Enemy(int x, int y,int w,int h,CelestialBody b){
+		super(x,y,w,h,b);
+		movementPoint = new Point(x,y);
+	}
+	public void moveX(float speed){
+		posX += speed;
+	}
+	public void moveY(float speed){
+		posY += speed;
+	}
+	public Point getPoint(){
+		return movementPoint;
+	}
+	public void setPoint(Point p){
+		movementPoint = p;
+	}
+}

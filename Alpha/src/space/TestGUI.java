@@ -16,6 +16,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -24,6 +25,15 @@ import javax.swing.JPanel;
 
 public class TestGUI extends JPanel {
 	static Image infoTab;
+	static Image[] starSprites = new Image[9];
+	static Image playerShip;
+	static Image currentDamage;
+	static Image damage1, damage2, damage3;
+	static Image playerLaser;
+	static Image enemyShip;
+	static Image enemyLaser;
+	static BackgroundStar[] stars;
+	static int backgroundStarAmount = 1000;
 	Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
 	Cursor defCursor = Cursor.getDefaultCursor();
 	Cursor currentCursor;
@@ -33,13 +43,17 @@ public class TestGUI extends JPanel {
 	ArrayList<ArrayList<CelestialBody>> systems = new ArrayList<ArrayList<CelestialBody>>();
 	ArrayList<Point> systemLocations = new ArrayList<Point>();
 	ArrayList<Building> buildings = new ArrayList<Building>();
-	Random rand = new Random();
-	public final int INDIVIDUALV = 0, SYSTEMV = 1, SECTORV = 2;
+	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+
+	static Random rand = new Random();
+	public final int COMBATV = 0, INDIVIDUALV = 1, SYSTEMV = 2, SECTORV = 3;
 	public int view = SECTORV;
+	long tStart;
+	long tEnd;
 	int mX, mY;
 	int highlightX, highlightY;
 	int highlightR;
-	int numSystems = 5;
+	int numSystems = 250;
 	int systemPoint;
 	int sysPointSize = 5;
 	static int wWidth = 1200, wHeight = 800;
@@ -51,6 +65,11 @@ public class TestGUI extends JPanel {
 	Point infoTabLoc = new Point();
 	CelestialBody body;
 	CelestialBody selectedBody;
+	Player player = new Player(100, 100, 39, 30, body);
+	Player enemyPlayer = new Player(100, 100, 39, 39, body);
+	int numEnemies;
+	boolean playerControlled;
+	boolean enemyControlled;
 
 	public static void main(String[] args) throws InterruptedException {
 		frame();
@@ -60,7 +79,27 @@ public class TestGUI extends JPanel {
 
 	public static void frame() throws InterruptedException {
 		try {
-			infoTab = ImageIO.read(new File("res/glassPanel_cornerTL.png"));
+			infoTab = ImageIO.read(new File("res/infoTab.png"));
+			starSprites[0] = ImageIO.read(new File("res/star1.png"));
+			starSprites[1] = ImageIO.read(new File("res/star2.png"));
+			starSprites[2] = ImageIO.read(new File("res/star3.png"));
+			starSprites[3] = ImageIO.read(new File("res/star4.png"));
+			starSprites[4] = ImageIO.read(new File("res/star5.png"));
+			starSprites[5] = ImageIO.read(new File("res/star6.png"));
+			starSprites[6] = ImageIO.read(new File("res/star7.png"));
+			starSprites[7] = ImageIO.read(new File("res/star8.png"));
+			starSprites[8] = ImageIO.read(new File("res/star9.png"));
+
+			playerShip = ImageIO.read(new File("res/playerShip1.png"));
+			playerLaser = ImageIO.read(new File("res/laserBlue1.png"));
+
+			enemyShip = ImageIO.read(new File("res/enemyRed1.png"));
+			enemyLaser = ImageIO.read(new File("res/laserRed1.png"));
+
+			damage1 = ImageIO.read(new File("res/playerShip1_damage1.png"));
+			damage2 = ImageIO.read(new File("res/playerShip1_damage2.png"));
+			damage3 = ImageIO.read(new File("res/playerShip1_damage3.png"));
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -77,6 +116,141 @@ public class TestGUI extends JPanel {
 		frame.addMouseListener(game.handler);
 		frame.addMouseMotionListener(game.handler);
 		frame.addKeyListener(game.handler);
+		randomizeStars();
+		while (true) {
+			Thread.sleep(1);
+			game.gameLoop();
+		}
+	}
+
+	public void gameLoop() {
+		if (view == COMBATV) {
+			moveLasers(player.getLasers(), .2f, -1);
+			enemyAI();
+			for (Enemy e : enemies) {
+				moveLasers(e.getLasers(), .2f, 1);
+			}
+			checkCollision();
+		}
+		repaint();
+	}
+
+	public static void randomizeStars() {
+		stars = new BackgroundStar[backgroundStarAmount];
+		for (int i = 0; i < stars.length; i++) {
+			stars[i] = new BackgroundStar(rand.nextInt(wWidth), rand.nextInt(wHeight), rand.nextInt(6) + 5,
+					starSprites[rand.nextInt(9)]);
+		}
+
+	}
+
+	public void setEnemies() {
+		player.setHealth(4);
+		enemies.clear();
+		numEnemies = rand.nextInt(16) + 10;
+	}
+
+	public void checkControl(CelestialBody body) {
+		enemyControlled = false;
+		playerControlled = false;
+		for (CelestialBody b : player.controlledBodies) {
+			if (b == body) {
+				playerControlled = true;
+				break;
+			}
+		}
+		for (CelestialBody b : enemyPlayer.controlledBodies) {
+			if (b == body) {
+				enemyControlled = true;
+				break;
+			}
+		}
+
+	}
+
+	public void checkCollision() {
+		for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext();) {
+			Enemy e = iterator.next();
+			for (Iterator<Point> iterator2 = player.getLasers().iterator(); iterator2.hasNext();) {
+				Point p = iterator2.next();
+				if (p.getX() > e.getX() && p.getX() < e.getX() + e.getWidth()) {
+					if (p.getY() < e.getY() + e.getHeight() && p.getY() > e.getY()) {
+						iterator.remove();
+						iterator2.remove();
+						numEnemies--;
+						break;
+					}
+				}
+
+			}
+			for (Iterator<Point> iterator3 = e.getLasers().iterator(); iterator3.hasNext();) {
+				Point p = iterator3.next();
+				if (p.getX() > player.getX() && p.getX() < player.getX() + player.getWidth()) {
+					if (p.getY() < player.getY() + player.getHeight() && p.getY() > player.getY()) {
+						player.decreaseHealth(1);
+						switch (player.getHealth()) {
+						case 3:
+							currentDamage = damage1;
+							break;
+						case 2:
+							currentDamage = damage2;
+							break;
+						case 1:
+							currentDamage = damage3;
+							break;
+						case 0:
+							view++;
+						}
+						iterator3.remove();
+					}
+				}
+
+			}
+		}
+
+	}
+
+	public void enemyAI() {
+		// Distance in time
+		long tEnd = System.currentTimeMillis();
+		long tDelta = tEnd - tStart;
+		if (tDelta / 1000.0 > .5 && enemies.size() < 10) {
+			enemies.add(new Enemy(rand.nextInt(20) * 50, -10, 39, 30, body));
+			tStart = System.currentTimeMillis();
+		}
+		if (numEnemies > 0) {
+			for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext();) {
+				Enemy e = iterator.next();
+				e.moveY(.2f);
+				if (rand.nextInt(1000) == 5) {
+					e.getLasers().add(new Point((int) (e.getX() + 8), (int) e.getY() + e.getHeight()));
+					e.getLasers().add(new Point((int) (e.getX() + e.getWidth() - 8), (int) e.getY() + e.getHeight()));
+				}
+				if (e.getY() > wHeight) {
+					iterator.remove();
+				}
+			}
+		} else {
+			enemyPlayer.controlledBodies.remove(body);
+			player.controlledBodies.add(body);
+			view++;
+		}
+	}
+
+	public void moveLasers(ArrayList<Point> lasers, float speed, int direction) {
+		for (Iterator<Point> iterator = lasers.iterator(); iterator.hasNext();) {
+			Point l = iterator.next();
+			if (direction == -1) {
+				l.y -= speed;
+			} else {
+				l.y += 1;
+			}
+			if (l.y < 0) {
+				iterator.remove();
+			} else if (l.y > wHeight) {
+				iterator.remove();
+			}
+		}
 	}
 
 	@Override
@@ -88,10 +262,40 @@ public class TestGUI extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.black);
 		g2d.fillRect(0, 0, frame.getWidth(), frame.getHeight());
+		// Draw background stars
+		for (int i = 0; i < stars.length; i++) {
+			g2d.drawImage(stars[i].getImage(), (int) stars[i].getX(), (int) stars[i].getY(), stars[i].getSize(),
+					stars[i].getSize(), null);
+		}
 		switch (view) {
+		case COMBATV:
+			g2d.drawImage(playerShip, (int) player.getX(), (int) player.getY(), player.getWidth(), player.getHeight(),
+					null);
+			g2d.drawImage(currentDamage, (int) player.getX(), (int) player.getY(), player.getWidth(),
+					player.getHeight(), null);
+			for (BackgroundStar s : stars) {
+				s.incrementY(.4f);
+				if (s.getY() > wHeight) {
+					s.setY(0);
+					s.setX(rand.nextInt(wWidth));
+				}
+
+			}
+			for (Point l : player.getLasers()) {
+				g2d.drawImage(playerLaser, l.x, l.y, 2, 10, null);
+			}
+			for (Enemy e : enemies) {
+				g2d.drawImage(enemyShip, (int) e.getX(), (int) e.getY(), e.getWidth(), e.getHeight(), null);
+				for (Point p : e.getLasers()) {
+					g2d.drawImage(enemyLaser, p.x, p.y, 2, 10, null);
+				}
+			}
+			break;
 		case INDIVIDUALV:
+			// Individual view of planets
+			checkControl(body);
 			g2d.setColor(body.getColor());
-			g2d.fillOval(50, 25, wHeight - 50, wHeight - 50);
+			g2d.fillOval(60, 25, wHeight - 60, wHeight - 60);
 			g2d.drawImage(infoTab, wHeight + 10, 30, 300, 500, null);
 			g.setColor(Color.white);
 			g2d.drawString("Avaliable Constructions", wHeight + 100, 80);
@@ -99,27 +303,48 @@ public class TestGUI extends JPanel {
 				g2d.drawString("Mining Facility", wHeight + 50, 90);
 			else
 				g2d.drawString("You cannot construct anything here!", wHeight + 50, 90);
+			if (enemyControlled) {
+				g2d.setColor(Color.red);
+				g2d.drawString("Controlled by the enemy!", wHeight + 50, 100);
+			}
+
+			else if (playerControlled) {
+				g2d.setColor(Color.green);
+				g2d.drawString("Controlled by you.", wHeight + 50, 100);
+			}
+			if (enemyControlled) {
+				g2d.setColor(Color.cyan);
+				g2d.drawRect(wHeight + 55, 200, 100, 15);
+				g2d.setColor(Color.orange);
+				g2d.drawString("Initiate Battle", wHeight + 60, 210);
+			}
 			for (Building b : buildings) {
-				if(body == b.getLocation()){
+				if (body == b.getLocation()) {
 					g2d.setColor(Color.black);
 					g2d.drawRect(b.getX(), b.getY(), 20, 20);
-					System.out.println(b.getX());
 				}
+			}
+			if (body.hasAtmosphere()) {
+				g2d.setColor(new Color(15, 100, 255, 50));
+				g2d.fillOval(40, 5, wHeight - 20, wHeight - 20);
 			}
 			break;
 		case SYSTEMV:
-			// Draw background stars
-			// for(int i = 0;i<1000;i++){
-			// g2d.setColor(new Color(0,0,(int)(Math.random()*256)));
-			// g2d.drawRect((int)(Math.random()*1200), (int)(Math.random()*800),
-			// 2, 2);
-			// }
 			// Draw planets and stars from systems
 			for (CelestialBody b : bodies) {
 				int c = b.getRadius() * 2;
+				int i = bodies.indexOf(b);
 				g2d.setColor(b.getColor());
-				b.setWindowLocX(bodies.indexOf(b) * 200);
-				b.setWindowLocY(500);
+				if (b.getType().equals("Star")) {
+					b.setWindowLocX(0);
+					b.setWindowLocY(500);
+				} else {
+					// Sets planet position to the position of previous planet
+					// plus radius and random variance
+					b.setWindowLocX(bodies.get(i - 1).getWindowLocX() + (bodies.get(i - 1).getRadius() * 4)
+							+ bodies.get(0).getRadius());
+					b.setWindowLocY(500 + bodies.get(0).getRadius());
+				}
 				g2d.fillOval(b.getWindowLocX(), b.getWindowLocY(), c, c);
 				if (b.hasAtmosphere()) {
 					g2d.setColor(new Color(15, 100, 255, 50));
@@ -167,12 +392,16 @@ public class TestGUI extends JPanel {
 		}
 		g2d.setColor(Color.gray);
 		g2d.fillRect(0, 0, wWidth, 25);
+		if (view == COMBATV) {
+			g2d.setColor(Color.black);
+			g2d.drawString("Enemies remaining: " + numEnemies, 10, 10);
+		}
 	}
 
 	public ArrayList<CelestialBody> generateSolarSystem() {
 		ArrayList<CelestialBody> b = new ArrayList<CelestialBody>();
 		b.add(new Star());
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < rand.nextInt(8) + 4; i++) {
 			b.add(new Planet());
 		}
 		systems.add(b);
@@ -198,18 +427,16 @@ public class TestGUI extends JPanel {
 				if (type == 1)
 					body = b;
 				currentCursor = new Cursor(Cursor.HAND_CURSOR);
-				repaint();
 				return true;
 			}
 		}
-		repaint();
 		highlightX = 0;
 		highlightY = 0;
 		highlightR = 0;
 		return false;
 	}
 
-	public void constructBuilding(CelestialBody b,int x,int y, int type) {
+	public void constructBuilding(CelestialBody b, int x, int y, int type) {
 		buildings.add(new MiningFacility(b, x, y));
 	}
 
@@ -219,13 +446,11 @@ public class TestGUI extends JPanel {
 				highlightX = p.x;
 				highlightY = p.y;
 				highlightR = sysPointSize;
-				repaint();
 				systemH = true;
 				systemPoint = systemLocations.indexOf(p);
 				return true;
 			}
 		}
-		repaint();
 		highlightX = 0;
 		highlightY = 0;
 		highlightR = 0;
@@ -239,19 +464,13 @@ public class TestGUI extends JPanel {
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			// TODO Auto-generated method stub
-			if (leftMouseDown)
-				System.out.println("Left button down");
-			else if (rightMouseDown) {
-				System.out.println("Right button down");
-			}
-		}
-
-		public void mouseMoved(MouseEvent e) {
-			// TODO Auto-generated method stub
 			mX = e.getX() - 3;
 			mY = e.getY() - 30;
 			frame.setCursor(currentCursor);
 			switch (view) {
+			case COMBATV:
+				player.setPos(mX - player.getWidth() / 2, mY - player.getHeight() / 2);
+				break;
 			case SYSTEMV:
 				if (checkBodyCollision(mX, mY, 0))
 					currentCursor = handCursor;
@@ -270,41 +489,40 @@ public class TestGUI extends JPanel {
 				break;
 			}
 			frame.setCursor(currentCursor);
-			repaint();
+		}
+
+		public void mouseMoved(MouseEvent e) {
+			// TODO Auto-generated method stub
+			mX = e.getX() - 3;
+			mY = e.getY() - 30;
+			frame.setCursor(currentCursor);
+			switch (view) {
+			case COMBATV:
+				player.setPos(mX - player.getWidth() / 2, (mY - player.getHeight() / 2) - 10);
+				break;
+			case SYSTEMV:
+				if (checkBodyCollision(mX, mY, 0))
+					currentCursor = handCursor;
+				else
+					currentCursor = defCursor;
+				break;
+
+			case SECTORV:
+				if (checkSystemCollision(mX, mY))
+					currentCursor = handCursor;
+				else
+					currentCursor = defCursor;
+				break;
+			default:
+				currentCursor = defCursor;
+				break;
+			}
+			frame.setCursor(currentCursor);
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
-			mX = e.getX() - 3;
-			mY = e.getY() - 30;
-			selectedBody = body;
-			if (infoTabActive && checkBodyCollision(mX, mY, 1) && (selectedBody == body)) {
-				view = INDIVIDUALV;
-			}
-			infoTabActive = false;
-			if (view == SECTORV && checkSystemCollision(mX, mY)) {
-				bodies = systems.get(systemPoint);
-				view = SYSTEMV;
-			} else if (!isBuilding && mX > 600 && view == INDIVIDUALV) {
-				isBuilding = true;
-			}
-			else if(isBuilding){
-				constructBuilding(body,mX,mY, 0);
-				isBuilding = false;
-			}
-			// Changing info tab display
-			else if (view == SYSTEMV && checkBodyCollision(mX, mY, 1)) {
-				infoTabActive = true;
-				infoTabLoc.setLocation(body.getWindowLocX() + body.getRadius() * 2 + 5, body.getWindowLocY());
-			}
-			if (e.getButton() == e.BUTTON3) {
-				if (view < SECTORV)
-					view++;
-				infoTabActive = false;
-				isBuilding = false;
-			}
-			repaint();
+
 		}
 
 		@Override
@@ -313,7 +531,6 @@ public class TestGUI extends JPanel {
 
 			if (temp == false) {
 				generateSystems();
-				repaint();
 				temp = true;
 			}
 		}
@@ -332,14 +549,62 @@ public class TestGUI extends JPanel {
 			else if (e.getButton() == e.BUTTON3) {
 				rightMouseDown = true;
 			}
+			player.getLasers().add(new Point((int) player.getX(), (int) player.getY() + 5));
+			player.getLasers()
+					.add(new Point((int) player.getX() + (int) player.getWidth() - 3, (int) player.getY() + 5));
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-			if (e.getButton() == e.BUTTON1)
+			mX = e.getX() - 3;
+			mY = e.getY() - 30;
+			selectedBody = body;
+			// Changes view to planet view
+			if (infoTabActive && checkBodyCollision(mX, mY, 1) && (selectedBody == body)) {
+				randomizeStars();
+				view--;
+			}
+			infoTabActive = false;
+			// Changes view if click system to system view
+			if (view == SECTORV && checkSystemCollision(mX, mY)) {
+				randomizeStars();
+				bodies = systems.get(systemPoint);
+				for (CelestialBody b : bodies) {
+					if (!b.getType().equals("Star") && rand.nextBoolean())
+						enemyPlayer.controlledBodies.add(b);
+				}
+				view--;
+			}
+			if (isBuilding) {
+				constructBuilding(body, mX, mY, 0);
+				isBuilding = false;
+			} else if (view == INDIVIDUALV) {
+				checkControl(body);
+				if (enemyControlled && mX > wHeight + 55 && mX < wHeight + 55 + 95) {
+					if (mY > 200 && mY < 215) {
+						setEnemies();
+						view--;
+					}
+				} else if (playerControlled && body.getType().equalsIgnoreCase("Terrestrial Planet") && !isBuilding && mX > 600)
+					isBuilding = true;
+			}
+			// Places building and disables building
+			// Changing info tab display
+			else if (view == SYSTEMV && checkBodyCollision(mX, mY, 1)) {
+				infoTabActive = true;
+				infoTabLoc.setLocation(body.getWindowLocX() + body.getRadius() * 2 + 5, body.getWindowLocY());
+			}
+			if (e.getButton() == e.BUTTON3) {
+				if (view < SECTORV) {
+					view++;
+					randomizeStars();
+				}
+				infoTabActive = false;
+				isBuilding = false;
+			}
+			if (e.getButton() == e.BUTTON1) {
 				leftMouseDown = false;
-			else if (e.getButton() == e.BUTTON3) {
+			} else if (e.getButton() == e.BUTTON3) {
 				rightMouseDown = false;
 			}
 		}
@@ -348,9 +613,11 @@ public class TestGUI extends JPanel {
 		public void keyPressed(KeyEvent e) {
 			// TODO Auto-generated method stub
 			if (e.getKeyCode() == e.VK_BACK_SPACE) {
-				if (view == SYSTEMV) {
-					view = SECTORV;
-					repaint();
+				if (view < SECTORV) {
+					randomizeStars();
+					view++;
+					infoTabActive = false;
+					highlightR = 0;
 				}
 			}
 		}

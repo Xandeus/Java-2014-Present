@@ -1,0 +1,44 @@
+package space;
+
+public class Player {
+	int posX, posY;
+	int width, height;
+	CelestialBody currentBody;
+	public Player(int x, int y,int w,int h,CelestialBody b){
+		posX = x;
+		posY = y;
+		width = w;
+		height = h;
+		currentBody = b;
+	}
+	public int getWindowLocationX(){
+		return posX;
+	}
+	public int getWindowLocationY(){
+		return posY;
+	}
+	public int getWidth(){
+		return width;
+	}
+	public int getHeight(){
+		return height;
+	}
+	public void setWidth(int w){
+		width = w;
+	}
+	public void setHeight(int h){
+		height = h;
+	}
+	public CelestialBody getCurrentBody(){
+		return currentBody;
+	}
+	public void setLocationX(int x){
+		posX = x;
+	}
+	public void setLocationY(int y){
+		posY = y;
+	}
+	public void setBody(CelestialBody b){
+		currentBody = b;
+	}
+}

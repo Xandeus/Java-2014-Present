@@ -1,8 +1,6 @@
 package fractals;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,10 +10,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -24,6 +22,7 @@ public class Fractals extends JPanel {
 	HandlerClass handler = new HandlerClass();
 	static JFrame frame = new JFrame("Fractals");
 	int count = 0;
+	int numR = 0;
 	int xVariance = 0, yVariance = 0;
 	int rLimit = 90;
 	int dX2 = 5;
@@ -33,12 +32,15 @@ public class Fractals extends JPanel {
 	int incVal = 1;
 	int state = 0;
 	final int TRI = 0, SQR = 1, BRANCH = 2;
-    float theta=0;
+	final int def = 0, gas = 1, random = 2;
+	int movementState = 1;
+	float theta = 0;
 
 	boolean zoom = false;
 	boolean rave = false;
 	boolean forceMaxB = false;
 	boolean isFall = false;
+	static boolean automate = false, completedRecursion = false;
 	ArrayList<Shape> shapes = new ArrayList<Shape>();
 	Font f = new Font("Engravers MT", Font.BOLD, 12);
 
@@ -49,7 +51,7 @@ public class Fractals extends JPanel {
 		frame.setSize(1500, 900);
 		frame.setLocation(300, 10);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		// frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setUndecorated(true);
 		frame.setVisible(true);
 		frame.setFocusable(true);
@@ -58,10 +60,35 @@ public class Fractals extends JPanel {
 		frame.addKeyListener(game.handler);
 		while (true) {
 			game.repaint();
+			if (automate)
+				game.loop();
 			Thread.sleep(1);
 		}
 	}
 
+	public void loop() {
+		if (!completedRecursion) {
+			switch(state){
+			case 0:
+				drawShape(0, frame.getHeight(),frame.getHeight());
+				break;
+			case 1:
+				drawShape(frame.getWidth()/2, frame.getHeight()/2,frame.getHeight()/4);
+				break;
+			case 2:
+				drawLine(frame.getWidth()/2, frame.getHeight(),0, frame.getHeight()/2, xVariance, yVariance);
+				break;
+			}
+			movementState = rand.nextInt(3);
+			completedRecursion = true;
+		}
+	}
+	public void reset(){
+		count =0;
+		numR = 0;
+		completedRecursion = false;
+		shapes.clear();
+	}
 	public Color randColor() {
 		return new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
 	}
@@ -86,45 +113,55 @@ public class Fractals extends JPanel {
 			shapes.get(count).changeState();
 			count++;
 		}
-		for (Shape c : shapes) {
-			if (c.isActive) {
-				if (rave) {
-					c.setColor(randColor());
-					g.setColor(randColor());
-				} else
-					g.setColor(c.getColor());
-				switch(state){
-				case TRI :
-					 g.drawLine(c.getX(), c.getY(), c.getX()+c.getR(), c.getY());
-					 g.drawLine(c.getX(), c.getY(), c.getX()+c.getR()/2,
-					 c.getY()-c.getR());
-					 g.drawLine(c.getX()+c.getR()/2, c.getY()-c.getR(),
-					 c.getX()+c.getR(), c.getY());
-					break;
-				case SQR :
-					 g.drawOval(c.getX(), c.getY(), c.getR(), c.getR());
-					break;
-				case BRANCH:
-					g.drawLine(c.getX(), c.getY(), c.getX() + c.getDX(), c.getY() - c.getDY());
-					break;
-				}
-			
-				// Draw triangles
-				// g.drawLine(c.getX(), c.getY(), c.getX()+c.getR(), c.getY());
-				// g.drawLine(c.getX(), c.getY(), c.getX()+c.getR()/2,
-				// c.getY()-c.getR());
-				// g.drawLine(c.getX()+c.getR()/2, c.getY()-c.getR(),
-				// c.getX()+c.getR(), c.getY());
-				// draw
-				// g.drawOval(c.getX(), c.getY(), c.getR(), c.getR());
-				//g.drawLine(c.getX(), c.getY(), c.getX() + c.getDX(), c.getY() - c.getDY());
-				if (zoom && c.getDY() <= 10) {
-					// c.change(rand.nextInt(2) + 1, rand.nextInt(5) - 2, 0);
-					c.alter(rand.nextInt(3)-1, rand.nextInt(3)-1);
+		else{
+			state++;
+			reset();
+			if(state>2)
+				state = 0;
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (completedRecursion) {
+			for (Shape c : shapes) {
+				if (c.isActive) {
+					if (rave) {
+						c.setColor(randColor());
+						g.setColor(randColor());
+					} else
+						g.setColor(c.getColor());
+					switch (state) {
+					case TRI:
+						g.drawLine(c.getX(), c.getY(), c.getX() + c.getR(), c.getY());
+						g.drawLine(c.getX(), c.getY(), c.getX() + c.getR() / 2, c.getY() - c.getR());
+						g.drawLine(c.getX() + c.getR() / 2, c.getY() - c.getR(), c.getX() + c.getR(), c.getY());
+						break;
+					case SQR:
+						g.drawRect(c.getX(), c.getY(), c.getR(), c.getR());
+						break;
+					case BRANCH:
+						g.drawLine(c.getX(), c.getY(), c.getX() + c.getDX(), c.getY() - c.getDY());
+						break;
+					}
+					if (zoom && c.getDY() <= 10) {
+//						c.alter(rand.nextInt(3) - 1, rand.nextInt(3) - 1);
+						c.change(1, 1, -1);
+					}
+					switch(movementState){
+					case gas:
+						if(c.getY()>0)
+							c.change(rand.nextInt(3)-1, -1, 0);
+						break;
+					case random:
+						c.change(rand.nextInt(3)-1,rand.nextInt(3)-1, 0);
+						break;
+					}
 				}
 			}
 		}
-
 	}
 
 	public int getDistance(int x, int y, int x1, int y1) {
@@ -137,12 +174,11 @@ public class Fractals extends JPanel {
 	public void drawLine(int x, int y, int dX, int dY, int xV, int yV) {
 		Color color;
 		int t;
-		if (getDistance(x,y,x+dX,y-dY) > 2)
+		if (getDistance(x, y, x + dX, y - dY) > 2)
 			color = new Color(165 + (rand.nextInt(21) - 10), 42 + (rand.nextInt(21) - 10), 0);
-		else if (isFall){
+		else if (isFall) {
 			color = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), 0);
-		}
-		else{
+		} else {
 			color = new Color(0, (int) (Math.random() * 255), 0);
 		}
 		shapes.add(new Shape(x, y, dX, dY, color));
@@ -152,52 +188,46 @@ public class Fractals extends JPanel {
 				totalBranches = numBranches;
 			else
 				totalBranches = rand.nextInt(numBranches) + 1;
-			t = rand.nextInt(11)-5;
-			dX2 = ((int)(dX*Math.cos(t*Math.PI/180)))-((int)(dY * Math.sin(t*Math.PI/180)));
-			dY2 = ((int)(dX*Math.sin(t*Math.PI/180)))+((int)(dY * Math.cos(t*Math.PI/180))); 
-			dX2/=2f-(rand.nextInt(xV+1)*.1f);
-			dY2/=2f-(rand.nextInt(yV+1)*.1f);
-			drawLine(x + dX, y - dY, dX2, dY2, xV,
-					yV);
-			for (int i = 0; i < totalBranches; i++){
-				//System.out.println("DY2: " + dY2);
-				t = (rand.nextInt(rLimit*2+1)-rLimit);
-				dX2 = ((int)(dX*Math.cos(t*Math.PI/180)))-((int)(dY * Math.sin(t*Math.PI/180)));
-				dY2 = ((int)(dX*Math.sin(t*Math.PI/180)))+((int)(dY * Math.cos(t*Math.PI/180))); 
-				dX2/=2f-(rand.nextInt(xV+1)*.1f);
-				dY2/=2f-(rand.nextInt(yV+1)*.1f);
-				drawLine(x + dX, y - dY, dX2, dY2, xV,
-						yV);
+			t = rand.nextInt(11) - 5;
+			dX2 = ((int) (dX * Math.cos(t * Math.PI / 180))) - ((int) (dY * Math.sin(t * Math.PI / 180)));
+			dY2 = ((int) (dX * Math.sin(t * Math.PI / 180))) + ((int) (dY * Math.cos(t * Math.PI / 180)));
+			dX2 /= 2f - (rand.nextInt(xV + 1) * .1f);
+			dY2 /= 2f - (rand.nextInt(yV + 1) * .1f);
+			drawLine(x + dX, y - dY, dX2, dY2, xV, yV);
+			for (int i = 0; i < totalBranches; i++) {
+				// System.out.println("DY2: " + dY2);
+				t = (rand.nextInt(rLimit * 2 + 1) - rLimit);
+				dX2 = ((int) (dX * Math.cos(t * Math.PI / 180))) - ((int) (dY * Math.sin(t * Math.PI / 180)));
+				dY2 = ((int) (dX * Math.sin(t * Math.PI / 180))) + ((int) (dY * Math.cos(t * Math.PI / 180)));
+				dX2 /= 2f - (rand.nextInt(xV + 1) * .1f);
+				dY2 /= 2f - (rand.nextInt(yV + 1) * .1f);
+				drawLine(x + dX, y - dY, dX2, dY2, xV, yV);
 			}
-			
 
 		}
 	}
 
-	public void drawShape(int x, int y, int r) {
+	public void drawShape(double x, double y, double r) {
 		shapes.add(new Shape(x, y, r));
 		if (r > 10) {
-			if(state == TRI){
-			// Pascal's triangle
-				 drawShape(x,y,r/2);
-				 drawShape(x+r/2,y,r/2);
-				 drawShape(x+r/4,y-r/2,r/2);
-			}
-			else{
-			// Squares
+			if (state == TRI) {
+				// Pascal's triangle
+				drawShape(x, y, r / 2);
+				drawShape(x + r / 2, y, r / 2);
+				drawShape(x + r / 4, y - r / 2, r / 2);
+			} else {
+				// Squares
 				drawShape(x - r / 2, y + r / 4, r / 2);
 				drawShape(x + r / 4, y - r / 2, r / 2);
-	
+
 				drawShape(x + r, y + r / 4, r / 2);
 				drawShape(x + r / 4, y + r, r / 2);
 			}
 		}
-
 	}
 
 	public static void main(String[] args) throws InterruptedException {
 		frame();
-
 	}
 
 	private class HandlerClass implements MouseListener, MouseMotionListener, KeyListener {
@@ -209,23 +239,19 @@ public class Fractals extends JPanel {
 			int x = event.getX();
 			int y = event.getY();
 			if (event.getButton() == MouseEvent.BUTTON1) {
-				switch(state){
+				switch (state) {
 				case TRI:
-					drawShape(x,y,size);
+					drawShape(x, y, size);
 					break;
 				case SQR:
-					drawShape(x,y,size);
+					drawShape(x, y, size);
 					break;
 				case BRANCH:
 					drawLine(x, y, 0, size, xVariance, yVariance);
 					break;
 				}
-				
-			}
-			if (event.getButton() == MouseEvent.BUTTON2) {
-				System.out.println(getDistance(5, 5, 0, 10));
-			}
 
+			}
 		}
 
 		public void mouseReleased(MouseEvent event) {
@@ -256,8 +282,7 @@ public class Fractals extends JPanel {
 			// TODO Auto-generated method stub
 			int keyCode = event.getKeyCode();
 			if (keyCode == event.VK_C) {
-				count = 0;
-				shapes.clear();
+				reset();
 			}
 			if (keyCode == event.VK_X) {
 				rave = !rave;
@@ -305,27 +330,11 @@ public class Fractals extends JPanel {
 			}
 			if (keyCode == event.VK_SPACE) {
 				state++;
-				if(state > 2)
+				if (state > 2)
 					state = 0;
 			}
 			if (keyCode == event.VK_P) {
-				while(true){
-					for(int y = 0;y<3;y++){
-						for(int x= 0; x<6;x++){
-							switch(state){
-							case TRI:
-								drawShape(x*100,y,size);
-								break;
-							case SQR:
-								drawShape(x*100,y,size);
-								break;
-							case BRANCH:
-								drawLine(x, y, 0, size, xVariance, yVariance);
-								break;
-							}
-						}
-					}
-				}
+				automate = !automate;
 			}
 		}
 

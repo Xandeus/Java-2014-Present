@@ -3,10 +3,11 @@ package fractals;
 import java.awt.Color;
 
 public class Shape {
-	int x,y,r,dX,dY;
+	double x,y,dX,dY;
+	double r;
 	boolean isActive = false;
 	Color color = new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
-	public Shape(int x, int y, int r){
+	public Shape(double x, double y, double r){
 		this.x = x;
 		this.y = y;
 		this.r = r;
@@ -27,19 +28,19 @@ public class Shape {
 		this.color = color;
 	}
 	public int getX(){
-		return x;
+		return (int)x;
 	}
 	public int getY(){
-		return y;
+		return (int)y;
 	}
 	public int getR(){
-		return r;
+		return (int)r;
 	}
 	public int getDX(){
-		return dX;
+		return (int)dX;
 	}
 	public int getDY(){
-		return dY;
+		return (int)dY;
 	}
 	public void setX(int x){
 		this.x = x;

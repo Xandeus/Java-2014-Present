@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 5 elements to &apos;GridPlace/src/ecosystem&apos;&#x0D;&#x0A;- Original project: &apos;GridPlace&apos;&#x0D;&#x0A;- Destination element: &apos;GridPlace/src/ecosystem&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     Organism.java&#x0D;&#x0A;     Food.java&#x0D;&#x0A;     Objects.java&#x0D;&#x0A;     Game.java&#x0D;&#x0A;     Predator.java&#x0D;&#x0A;- Update references to refactored element" description="Move compilation units" destination="/src&lt;ecosystem" element1="/src&lt;{Organism.java" element2="/src&lt;{Food.java" element3="/src&lt;{Objects.java" element4="/src&lt;{Game.java" element5="/src&lt;{Predator.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1450047137196" units="5" version="1.0"/>
+</session>

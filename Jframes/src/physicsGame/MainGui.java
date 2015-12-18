@@ -16,13 +16,14 @@ import javax.swing.JPanel;
 
 public class MainGui extends JPanel {
 	HandlerClass handler = new HandlerClass();
-	Player player = new Player(500, 600, 10, 10);
+	Player player = new Player(500, 600, 10, 10, Color.DARK_GRAY);
 	ArrayList<Player> boxes = new ArrayList<Player>();
 	int dir = 0;
 	static int wHeight = 800;
 	static int wWidth = 1500;
 	static JFrame frame = new JFrame("**");
 	static boolean keyDown = false;
+	static boolean boxFall = true;
 
 	public static void main(String[] args) throws InterruptedException {
 		frame();
@@ -30,6 +31,7 @@ public class MainGui extends JPanel {
 
 	public static void frame() throws InterruptedException {
 		MainGui game = new MainGui();
+		game.setBackground(new Color(135, 206, 255));
 		frame.add(game);
 		frame.setResizable(true);
 		frame.setSize(wWidth, wHeight);
@@ -62,30 +64,68 @@ public class MainGui extends JPanel {
 			if (Math.abs(player.getdX()) < .0001f) {
 				player.setdX(0);
 			}
-		}
-		else{
-			if(Math.abs(player.getdX()) < 1)
+		} else {
+			if (Math.abs(player.getdX()) < .75)
 				player.incX(.01f * dir);
 		}
 		player.updatePos();
+		for (Player b : boxes) {
+			if (boxFall && !b.isColliding()) {
+				b.incY(.001f);
+			}
+			b.updatePos();
+		}
+
 	}
 
 	public void checkCollisions() {
-		if (player.getdY() > 0 && player.getY() >= (700 - player.getHeight())) {
+		if (player.getdY() >= 0 && player.getY() >= (700 - player.getHeight())) {
 			player.setColliding(true);
 			player.setdY(0);
-		} 
-		else {
+		} else {
 			player.setColliding(false);
 		}
-		if(player.getX() < 0){
+		if (player.getX() <= 0) {
 			player.setdX(0);
 		}
-		if(player.getX()+player.getWidth() > wWidth-20){
+		if (player.getX() + player.getWidth() >= wWidth - 20) {
 			player.setdX(0);
 		}
-		
-		
+		for (Player b : boxes) {
+			if (b.getX() <= 0) {
+				b.setdX(0);
+			}
+			if (b.getX() + b.getWidth() >= wWidth - 20) {
+				b.setdX(0);
+			}
+			if (player.getY() + player.getHeight() >= b.getY() && player.getY() < b.getY() + b.getHeight()) {
+				if (player.getX() + player.getWidth() > b.getX() && player.getX() < b.getX() + b.getWidth()) {
+						player.setColliding(true);
+						player.setdY(0);
+						if(Math.abs(player.getdX())>0){
+							b.setdX(player.getdX());
+						}
+				}
+			}
+			if (b.getdY() >= 0 && b.getY() >= (700 - b.getHeight())) {
+				b.setColliding(true);
+				b.setdY(0);
+			} else {
+				b.setColliding(false);
+			}
+			for (Player x : boxes) {
+				if (x != b) {
+					if (b.getY() + b.getHeight() >= x.getY() && b.getX() + b.getWidth() > x.getX()
+							&& b.getX() < x.getX() + x.getWidth()) {
+						if (b.getY() <= x.getY() + x.getHeight()) {
+							b.setColliding(true);
+							b.setdY(0);
+						}
+					}
+				}
+			}
+		}
+
 	}
 
 	public void paint(Graphics graphics) {
@@ -94,8 +134,12 @@ public class MainGui extends JPanel {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(Color.black);
 		g.fillRect(0, 700, wWidth, wHeight);
-		g.setColor(Color.red);
-		g.drawRect(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+		g.setColor(player.getColor());
+		g.fillRect(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+		for (Player b : boxes) {
+			g.setColor(b.getColor());
+			g.drawImage(b.getImage(), b.getX(), b.getY(), b.getWidth(), b.getHeight(), null);
+		}
 	}
 
 	private class HandlerClass implements MouseListener, MouseMotionListener, KeyListener {
@@ -106,7 +150,7 @@ public class MainGui extends JPanel {
 		public void mousePressed(MouseEvent event) {
 			int x = event.getX();
 			int y = event.getY();
-			boxes.add(new Player(x,y,10,10));
+			boxes.add(new Player(x, y, 20, (int) (Math.random() * 21) + 5));
 		}
 
 		public void mouseReleased(MouseEvent event) {
@@ -146,9 +190,25 @@ public class MainGui extends JPanel {
 
 			if (keyCode == event.VK_SPACE) {
 				player.setdY(-.5f);
+				
+			}
+			if (keyCode == event.VK_Q) {
+				boxFall = !boxFall;
 			}
 			if (keyCode == event.VK_C) {
-				player.setY(0);
+				boxes.clear();
+			}
+			if (keyCode == event.VK_SHIFT) {
+				for(Player b : boxes){
+					b.setdY(-.5f);
+					if(b.getX() > player.getX()){
+						b.setdX(2f);
+					}
+					else{
+						b.setdX(-2f);
+
+					}
+				}
 			}
 
 		}

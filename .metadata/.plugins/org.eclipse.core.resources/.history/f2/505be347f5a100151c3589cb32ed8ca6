@@ -1,0 +1,10 @@
+package hexagon_world;
+
+import java.awt.Image;
+
+public class Tile {
+	Image dirt,grass,treeGrass;
+	public Tile(){
+		
+	}
+}

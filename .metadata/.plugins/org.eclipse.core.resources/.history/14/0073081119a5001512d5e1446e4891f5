@@ -1,0 +1,10 @@
+package physicsGame;
+
+public class Player {
+	float posX;
+	float posY;
+	
+	public Player(int x, int y){
+		
+	}
+}

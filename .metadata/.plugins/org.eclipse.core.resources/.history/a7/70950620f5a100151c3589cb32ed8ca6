@@ -1,0 +1,8 @@
+package hexagon_world;
+
+public class Tile {
+	Image dirt,grass,treeGrass;
+	public Tile(){
+		
+	}
+}

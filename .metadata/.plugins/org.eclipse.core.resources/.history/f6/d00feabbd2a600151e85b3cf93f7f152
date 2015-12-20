@@ -102,6 +102,13 @@ public class MainGui extends JPanel {
 			if (b.getX() + b.getWidth() >= wWidth - 20) {
 				b.setdX(0);
 			}
+			if (player.getY() + b.getHeight() >= x.getY() && b.getX() + b.getWidth() > x.getX()
+					&& b.getX() < x.getX() + x.getWidth()) {
+				if (b.getY() <= x.getY() + x.getHeight()) {
+					b.setColliding(true);
+					b.setdY(0);
+				}
+			}
 			if (player.getdY() >= 0 && player.getY() + player.getHeight() > b.getY() && player.getY() < b.getY() + b.getHeight()) {
 				if (player.getX() + player.getWidth() > b.getX() && player.getX() < b.getX() + b.getWidth()) {
 						player.setColliding(true);
@@ -114,14 +121,7 @@ public class MainGui extends JPanel {
 			if (b.getdY() >= 0 && b.getY() >= (700 - b.getHeight())) {
 				b.setColliding(true);
 				b.setdY(0);
-			} 
-			else if (b.getY() + b.getHeight() >= player.getY() && b.getX() + b.getWidth() > player.getX()
-					&& b.getX() < player.getX() + player.getWidth()) {
-				if (b.getY() <= player.getY() + player.getHeight()) {
-					b.setColliding(true);
-					b.setdY(0);
-				}
-			}else {
+			} else {
 				b.setColliding(false);
 			}
 			for (Player x : boxes) {

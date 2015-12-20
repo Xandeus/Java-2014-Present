@@ -102,11 +102,11 @@ public class MainGui extends JPanel {
 			if (b.getX() + b.getWidth() >= wWidth - 20) {
 				b.setdX(0);
 			}
-			if (player.getdY() >= 0 && player.getY() + player.getHeight() > b.getY() && player.getY() < b.getY() + b.getHeight()) {
+			if (player.getY() + player.getHeight() >= b.getY() && player.getY() < b.getY() + b.getHeight()) {
 				if (player.getX() + player.getWidth() > b.getX() && player.getX() < b.getX() + b.getWidth()) {
 						player.setColliding(true);
 						player.setdY(0);
-						if(boxFall && Math.abs(player.getdX())>0){
+						if(Math.abs(player.getdX())>0){
 							b.setdX(player.getdX());
 						}
 				}
@@ -114,14 +114,7 @@ public class MainGui extends JPanel {
 			if (b.getdY() >= 0 && b.getY() >= (700 - b.getHeight())) {
 				b.setColliding(true);
 				b.setdY(0);
-			} 
-			else if (b.getY() + b.getHeight() >= player.getY() && b.getX() + b.getWidth() > player.getX()
-					&& b.getX() < player.getX() + player.getWidth()) {
-				if (b.getY() <= player.getY() + player.getHeight()) {
-					b.setColliding(true);
-					b.setdY(0);
-				}
-			}else {
+			} else {
 				b.setColliding(false);
 			}
 			for (Player x : boxes) {
@@ -159,23 +152,20 @@ public class MainGui extends JPanel {
 
 	private class HandlerClass implements MouseListener, MouseMotionListener, KeyListener {
 		public void mouseClicked(MouseEvent event) {
-			int x = event.getX()-10;
-			int y = event.getY()-38;
+			int x = event.getX();
+			int y = event.getY()-40;
 			boxes.add(new Player(x, y, 20, (int) (Math.random() * 21) + 5));
 		}
 
 		public void mousePressed(MouseEvent event) {
-			int x = event.getX()-10;
-			int y = event.getY()-38;
+			int x = event.getX();
+			int y = event.getY()-40;
 			bX = x;
 			bY = y;
 		}
 
 		public void mouseReleased(MouseEvent event) {
-			if(highlightBox){
-				boxes.add(new Player(bX,bY,bW,bH));
-				highlightBox = false;
-			}
+
 		}
 
 		public void mouseEntered(MouseEvent event) {
@@ -187,11 +177,11 @@ public class MainGui extends JPanel {
 
 		// These are mouse motion events
 		public void mouseDragged(MouseEvent event) {
-			int x = event.getX()-10;
-			int y = event.getY()-38;
+			int x = event.getX();
+			int y = event.getY()-40;
 			highlightBox = true;
-			bW = Math.abs(x-bX);
-			bH = Math.abs(y-bY);
+			bW = x-bX;
+			bH = y-bY;
 			
 		}
 
@@ -230,6 +220,7 @@ public class MainGui extends JPanel {
 					}
 					else{
 						b.setdX(-2f);
+
 					}
 				}
 			}
@@ -239,10 +230,7 @@ public class MainGui extends JPanel {
 		@Override
 		public void keyReleased(KeyEvent event) {
 			// TODO Auto-generated method stub
-			int keyCode = event.getKeyCode();
-
-			if(keyCode != event.VK_SPACE)
-				keyDown = false;
+			keyDown = false;
 		}
 
 		@Override

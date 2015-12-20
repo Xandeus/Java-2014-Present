@@ -106,7 +106,7 @@ public class MainGui extends JPanel {
 				if (player.getX() + player.getWidth() > b.getX() && player.getX() < b.getX() + b.getWidth()) {
 						player.setColliding(true);
 						player.setdY(0);
-						if(boxFall && Math.abs(player.getdX())>0){
+						if(boxFall && !(player.getY() < b.getY()) && Math.abs(player.getdX())>0){
 							b.setdX(player.getdX());
 						}
 				}
@@ -114,14 +114,7 @@ public class MainGui extends JPanel {
 			if (b.getdY() >= 0 && b.getY() >= (700 - b.getHeight())) {
 				b.setColliding(true);
 				b.setdY(0);
-			} 
-			else if (b.getY() + b.getHeight() >= player.getY() && b.getX() + b.getWidth() > player.getX()
-					&& b.getX() < player.getX() + player.getWidth()) {
-				if (b.getY() <= player.getY() + player.getHeight()) {
-					b.setColliding(true);
-					b.setdY(0);
-				}
-			}else {
+			} else {
 				b.setColliding(false);
 			}
 			for (Player x : boxes) {

@@ -115,7 +115,7 @@ public class MainGui extends JPanel {
 				b.setColliding(true);
 				b.setdY(0);
 			} 
-			else if (b.getY() + b.getHeight() >= player.getY() && b.getX() + b.getWidth() > player.getX()
+			else  if (b.getY() + b.getHeight() >= player.getY() && b.getX() + b.getWidth() > player.getX()
 					&& b.getX() < player.getX() + player.getWidth()) {
 				if (b.getY() <= player.getY() + player.getHeight()) {
 					b.setColliding(true);

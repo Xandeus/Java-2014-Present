@@ -5,13 +5,18 @@ package binaryTrees;
 //Class - 
 //Lab  -
 
+//� A+ Computer Science  -  www.apluscompsci.com
+//Name -  
+//Date -
+//Class - 
+//Lab  -
+
 public class TreeNode implements Treeable
 {
 	private Comparable treeNodeValue;
 	private TreeNode leftTreeNode;
 	private TreeNode rightTreeNode;
-	private int level;
-	private boolean isLeft;
+
 	public TreeNode( )
 	{
 		treeNodeValue = null;
@@ -19,22 +24,18 @@ public class TreeNode implements Treeable
 		rightTreeNode = null;
 	}
 
-	public TreeNode(Comparable value,int l,boolean b)
+	public TreeNode(Comparable value)
 	{
 		treeNodeValue = value;
-		level = l;
-		isLeft = b;
 		leftTreeNode = null;
 		rightTreeNode = null;
 	}
 
-	public TreeNode(Comparable value, TreeNode left, TreeNode right, int l,boolean b)
+	public TreeNode(Comparable value, TreeNode left, TreeNode right)
 	{
 		treeNodeValue = value;
 		leftTreeNode = left;
 		rightTreeNode = right;
-		level = l;
-		isLeft = b;
 	}
 
 	public Comparable getValue()
@@ -51,12 +52,7 @@ public class TreeNode implements Treeable
 	{
 		return rightTreeNode;
 	}
-	public int getLevel(){
-		return level;
-	}
-	public boolean isLeft(){
-		return isLeft;
-	}
+
 	public void setValue(Comparable value)
 	{
 		treeNodeValue = value;
@@ -71,5 +67,4 @@ public class TreeNode implements Treeable
 	{
 		rightTreeNode = (TreeNode)right;
 	}
-
 }

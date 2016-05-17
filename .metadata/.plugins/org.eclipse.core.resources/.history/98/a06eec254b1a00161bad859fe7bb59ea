@@ -1,0 +1,59 @@
+package machinelearning;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public class runner {
+	public static void main(String[] args) {
+		
+		float mutationRate;
+		int totalPopulation = 150;
+		DNA[] population;
+		Random rand = new Random();
+		ArrayList<DNA> matingPool = new ArrayList<DNA>();
+		;
+
+		mutationRate = 0.01f;
+
+		population = new DNA[totalPopulation];
+		for (int i = 0; i < population.length; i++) {
+			population[i] = new DNA();
+		}
+		for (int cycle = 0; cycle < 100; cycle++) {
+			System.out.println("Generation: " + cycle);
+			for (int i = 0; i < population.length; i++) {
+				population[i].fitness();
+				//System.out.println(population[i].fitness);
+			}
+
+			for (int i = 0; i < population.length; i++) {
+				int n = (int) (population[i].fitness * 100);
+				for (int j = 0; j < n; j++) {
+					matingPool.add(population[i]);
+				}
+			}
+			//Showing DNA over a certain fitness
+			DNA h = population[0].fitness;
+			for(DNA x : population){
+				if(x.fitness > h){
+					h = x.fitness;
+				}
+			}
+			System.out.println("Highest fitness: ");
+			//Mating
+			for (int i = 0; i < population.length; i++) {
+				int a = rand.nextInt(matingPool.size());
+				int b = rand.nextInt(matingPool.size());
+				DNA partnerA = matingPool.get(a);
+				DNA partnerB = matingPool.get(b);
+				DNA child = partnerA.crossover(partnerB);
+				child.mutate(mutationRate);
+
+				population[i] = child;
+			}
+			
+		}
+		
+	}
+	
+}

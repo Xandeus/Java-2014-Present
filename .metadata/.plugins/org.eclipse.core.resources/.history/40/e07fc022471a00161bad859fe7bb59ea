@@ -1,0 +1,28 @@
+package machinelearning;
+
+import java.util.Random;
+
+public class DNA {
+	char[] genes = new char[18];
+	float fitness;
+	Random rand = new Random();
+	DNA(){
+		for(int i = 0; i< genes.length; i++){
+			genes[i] = (char) (rand.nextInt((128-31))+32);
+		}
+	}
+	 
+	 Function to score fitness
+	   void fitness () {
+	     int score = 0;
+	     for (int i = 0; i < genes.length; i++) {
+	 Is the character correct?
+	       if (genes[i] == target.charAt(i)) {
+	 If so, increment the score.
+	         score++;
+	       }
+	     }
+	 Fitness is the percentage correct.
+	     fitness = float(score)/target.length();
+	   }
+}

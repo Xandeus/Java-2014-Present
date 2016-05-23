@@ -6,7 +6,7 @@ public class DNA {
 	Random rand = new Random();
 	char[] genes;
 	float fitness;
-	String target = "cat in the hat";
+	static String target = "cat in the hat";
 
 	DNA() {
 		genes = new char[target.length()];
@@ -14,7 +14,9 @@ public class DNA {
 			genes[i] = (char) (rand.nextInt((128 - 31) + 32));
 		}
 	}
-
+	public static void setTarget(String phrase){
+		target = phrase;
+	}
 	void fitness() {
 		int score = 0;
 		for (int i = 0; i < genes.length; i++) {
@@ -37,7 +39,7 @@ public class DNA {
 		return child;
 	}
 
-	void mutate(float mutationRate) {
+	void mutate(Double mutationRate) {
 		for (int i = 0; i < genes.length; i++) {
 			if (Math.random() < mutationRate) {
 				genes[i] = (char) (rand.nextInt((128 - 31) + 32));

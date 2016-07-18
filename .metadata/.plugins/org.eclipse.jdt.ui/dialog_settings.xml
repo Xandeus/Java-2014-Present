@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<item value="C:\Users\Alex\Downloads\twitter4j-4.0.4\lib" key="org.eclipse.jdt.ui.lastextjar"/>
 	<item value="640,680" key="UserLibraryLoadSaveDialog.size"/>
 	<section name="org.eclipse.ltk.ui.refactoring.settings">
 		<item value="false" key="renameSubpackages"/>
@@ -76,7 +77,7 @@
 		<item value="3" key="index"/>
 	</section>
 	<section name="BuildPathsPropertyPage">
-		<item value="3" key="pageIndex"/>
+		<item value="2" key="pageIndex"/>
 	</section>
 	<section name="quick_assist_proposal_size">
 		<item value="316" key="size.y"/>

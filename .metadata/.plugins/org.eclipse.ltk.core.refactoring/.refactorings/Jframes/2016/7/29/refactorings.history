@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Jframes/res/OrangeAndGReen&apos; to &apos;OrangeAndGreen&apos;" description="Rename resource &apos;OrangeAndGReen&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="res/OrangeAndGReen" name="OrangeAndGreen" stamp="1468466265214" updateReferences="true"/>
+</session>

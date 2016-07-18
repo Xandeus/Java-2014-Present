@@ -28,6 +28,8 @@ public class GameBoard extends JPanel {
 	boolean whiteTurn = true;
 	boolean gameOver = false;
 	GamePiece[][] pieces = new GamePiece[8][8];
+	GamePiece whiteKing;
+	GamePiece blackKing;
 	GamePiece pSelected = null;
 
 	public static void main(String[] args) throws InterruptedException {
@@ -134,6 +136,14 @@ public class GameBoard extends JPanel {
 		for (GamePiece[] gamePiece : pieces) {
 			for (GamePiece p : gamePiece) {
 				if (p != null && !p.getName().equals("null")) {
+					if(p.getName().equals("King")){
+						if(p.isWhite){
+							whiteKing = p;
+						}
+						else{
+							blackKing = p;
+						}
+					}
 					g.drawImage(p.getImage(), p.getPosX() * (width / 8), p.getPosY() * (height / 8), width / 8,
 							height / 8, null);
 				}
@@ -144,7 +154,63 @@ public class GameBoard extends JPanel {
 		if (pSelected != null)
 			g.drawRect(x, y, (height / 8), (width / 8));
 	}
+	public boolean isMoveValid(GamePiece desiredMove){
+		GamePiece start = desiredMove;
+		GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),
+				pSelected.getPosY() * (height / 8), pSelected.getPosX(), pSelected.getPosY());
+		pieces[pSelected.getPosX()][pSelected.getPosY()] = temp;
+		pSelected.setPosX(desiredMove.getPosX());
+		pSelected.setPosY(desiredMove.getPosY());
+		pieces[desiredMove.getPosX()][desiredMove.getPosY()] = pSelected;
 
+		if(whiteTurn){
+			for (GamePiece[] gamePiece : pieces) {
+				for (GamePiece p : gamePiece) {
+					if (p != null && !p.getName().equals("null") && !p.isWhite) {
+						for(GamePiece move : p.findValidMoves(pieces)){
+							if(move == whiteKing){
+								pieces[desiredMove.getPosX()][desiredMove.getPosY()] = start;
+								pSelected.setPosX(temp.getPosX());
+								pSelected.setPosY(temp.getPosY());
+								pieces[temp.getPosX()][temp.getPosY()] = pSelected;
+								return false;
+							}
+						}
+					}
+				}
+			}
+		}
+		else{
+			for (GamePiece[] gamePiece : pieces) {
+				for (GamePiece p : gamePiece) {
+					if (p != null && !p.getName().equals("null") && p.isWhite) {
+						for(GamePiece move : p.findValidMoves(pieces)){
+							if(move == blackKing){
+								pieces[desiredMove.getPosX()][desiredMove.getPosY()] = start;
+								pSelected.setPosX(temp.getPosX());
+								pSelected.setPosY(temp.getPosY());
+								pieces[temp.getPosX()][temp.getPosY()] = pSelected;
+								return false;
+							}
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	public GamePiece getArrayPos(int x, int y) {
+		// TODO Auto-generated method stub
+		for (GamePiece[] gamePiece : pieces) {
+			for (GamePiece p : gamePiece) {
+				if (p.getPosX() * (width / 8) == x && p.getPosY() * (height / 8) == y) {
+					return p;
+				}
+			}
+		}
+		return null;
+	}
+	
 	private class HandlerClass implements MouseListener, MouseMotionListener {
 		public void mouseClicked(MouseEvent event) {
 
@@ -165,7 +231,7 @@ public class GameBoard extends JPanel {
 					y = (y1 - (y1 % (height / 8)));
 				} else {
 					GamePiece desiredMove = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
-					if (pSelected.isMoveValid(desiredMove, pieces)) {
+					if (pSelected.isMoveValid(desiredMove, pieces) && isMoveValid(desiredMove)) {
 						GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),
 								pSelected.getPosY() * (height / 8), pSelected.getPosX(), pSelected.getPosY());
 						pieces[pSelected.getPosX()][pSelected.getPosY()] = temp;
@@ -179,8 +245,7 @@ public class GameBoard extends JPanel {
 						else
 							gameLog.append(getColor(whiteTurn) + pSelected.getName() + " capured " + getColor(!whiteTurn) + desiredMove.getName() + " at " + desiredMove.getPosX() + " " + desiredMove.getPosY() + "\n");
 						pSelected = null;
-						whiteTurn = !whiteTurn;
-						
+						whiteTurn = !whiteTurn;	
 					}
 				}
 			}
@@ -195,17 +260,6 @@ public class GameBoard extends JPanel {
 				return "White ";
 			else
 				return "Black ";
-		}
-		private GamePiece getArrayPos(int x, int y) {
-			// TODO Auto-generated method stub
-			for (GamePiece[] gamePiece : pieces) {
-				for (GamePiece p : gamePiece) {
-					if (p.getPosX() * (width / 8) == x && p.getPosY() * (height / 8) == y) {
-						return p;
-					}
-				}
-			}
-			return null;
 		}
 
 		public void mouseReleased(MouseEvent event) {

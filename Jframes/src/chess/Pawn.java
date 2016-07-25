@@ -32,6 +32,7 @@ public class Pawn extends GamePiece {
 	public boolean isMoveValid(GamePiece desiredMove, GamePiece[][] pieces) {
 		// TODO Auto-generated method stub
 		validMoves = findValidMoves(pieces);
+		System.out.println("First move: " + fMove);
 		for (GamePiece p : validMoves) {
 			if (p == desiredMove) {
 				if ((this.getPosX() == desiredMove.getPosX()) || (!desiredMove.getName().equals("null"))) {

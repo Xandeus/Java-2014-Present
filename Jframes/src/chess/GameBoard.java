@@ -10,14 +10,13 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 public class GameBoard extends JPanel {
 	HandlerClass handler = new HandlerClass();
@@ -28,6 +27,7 @@ public class GameBoard extends JPanel {
 	boolean whiteTurn = true;
 	boolean gameOver = false;
 	GamePiece[][] pieces = new GamePiece[8][8];
+	ArrayList<GamePiece> moves = new ArrayList<GamePiece>();
 	GamePiece whiteKing;
 	GamePiece blackKing;
 	GamePiece pSelected = null;
@@ -41,7 +41,7 @@ public class GameBoard extends JPanel {
 	static JScrollPane scrollPane = new JScrollPane(gameLog);
 	static JFrame frame = new JFrame("CHESS");
 	static final int GAMELOG_WINDOW_LIMIT = 10;
-	  
+
 	public static void frame() throws InterruptedException {
 
 		GameBoard game = new GameBoard();
@@ -54,7 +54,7 @@ public class GameBoard extends JPanel {
 		gameLog.setEditable(false);
 		gameLog.setBackground(Color.WHITE);
 		gameLog.setFont(logFont);
-		scrollPane.setPreferredSize(new Dimension(200,10));
+		scrollPane.setPreferredSize(new Dimension(200, 10));
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		frame.add(text, BorderLayout.SOUTH);
 		frame.add(scrollPane, BorderLayout.EAST);
@@ -67,7 +67,7 @@ public class GameBoard extends JPanel {
 		frame.setVisible(true);
 		frame.addMouseListener(game.handler);
 		frame.addMouseMotionListener(game.handler);
-		
+
 	}
 
 	public void fillBoard() {
@@ -113,6 +113,22 @@ public class GameBoard extends JPanel {
 		}
 	}
 
+	public void checkMoves() {
+		moves.clear();
+		for (GamePiece[] gamePiece : pieces) {
+			for (GamePiece p : gamePiece) {
+				if (!p.getName().equals("null") && (p.isWhite() == whiteTurn)) {
+					for (GamePiece move : p.findValidMoves(pieces)) {
+						if(p.isMoveValid(move, pieces) && isMoveValid(move,p)){
+							if(move.getName().equals("null") || (move.isWhite() != p.isWhite()))
+								moves.add(move);	
+						}
+					}
+				}
+			}
+		}
+	}
+
 	@Override
 	public void paint(Graphics g) {
 
@@ -136,11 +152,10 @@ public class GameBoard extends JPanel {
 		for (GamePiece[] gamePiece : pieces) {
 			for (GamePiece p : gamePiece) {
 				if (p != null && !p.getName().equals("null")) {
-					if(p.getName().equals("King")){
-						if(p.isWhite){
+					if (p.getName().equals("King")) {
+						if (p.isWhite) {
 							whiteKing = p;
-						}
-						else{
+						} else {
 							blackKing = p;
 						}
 					}
@@ -153,22 +168,26 @@ public class GameBoard extends JPanel {
 		g.setColor(Color.green);
 		if (pSelected != null)
 			g.drawRect(x, y, (height / 8), (width / 8));
+		if(gameOver){
+			g.drawString("GAME OVER!", 200, 200);
+		}
 	}
-	public boolean isMoveValid(GamePiece desiredMove){
+
+	public boolean isMoveValid(GamePiece desiredMove,GamePiece pSelected) {
 		GamePiece start = desiredMove;
-		GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),
-				pSelected.getPosY() * (height / 8), pSelected.getPosX(), pSelected.getPosY());
+		GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8), pSelected.getPosY() * (height / 8),
+				pSelected.getPosX(), pSelected.getPosY());
 		pieces[pSelected.getPosX()][pSelected.getPosY()] = temp;
 		pSelected.setPosX(desiredMove.getPosX());
 		pSelected.setPosY(desiredMove.getPosY());
 		pieces[desiredMove.getPosX()][desiredMove.getPosY()] = pSelected;
 
-		if(whiteTurn){
+		if (whiteTurn) {
 			for (GamePiece[] gamePiece : pieces) {
 				for (GamePiece p : gamePiece) {
 					if (p != null && !p.getName().equals("null") && !p.isWhite) {
-						for(GamePiece move : p.findValidMoves(pieces)){
-							if(move == whiteKing){
+						for (GamePiece move : p.findValidMoves(pieces)) {
+							if (move == whiteKing) {
 								pieces[desiredMove.getPosX()][desiredMove.getPosY()] = start;
 								pSelected.setPosX(temp.getPosX());
 								pSelected.setPosY(temp.getPosY());
@@ -179,13 +198,12 @@ public class GameBoard extends JPanel {
 					}
 				}
 			}
-		}
-		else{
+		} else {
 			for (GamePiece[] gamePiece : pieces) {
 				for (GamePiece p : gamePiece) {
 					if (p != null && !p.getName().equals("null") && p.isWhite) {
-						for(GamePiece move : p.findValidMoves(pieces)){
-							if(move == blackKing){
+						for (GamePiece move : p.findValidMoves(pieces)) {
+							if (move == blackKing) {
 								pieces[desiredMove.getPosX()][desiredMove.getPosY()] = start;
 								pSelected.setPosX(temp.getPosX());
 								pSelected.setPosY(temp.getPosY());
@@ -197,8 +215,13 @@ public class GameBoard extends JPanel {
 				}
 			}
 		}
+		pieces[desiredMove.getPosX()][desiredMove.getPosY()] = start;
+		pSelected.setPosX(temp.getPosX());
+		pSelected.setPosY(temp.getPosY());
+		pieces[temp.getPosX()][temp.getPosY()] = pSelected;
 		return true;
 	}
+
 	public GamePiece getArrayPos(int x, int y) {
 		// TODO Auto-generated method stub
 		for (GamePiece[] gamePiece : pieces) {
@@ -210,7 +233,7 @@ public class GameBoard extends JPanel {
 		}
 		return null;
 	}
-	
+
 	private class HandlerClass implements MouseListener, MouseMotionListener {
 		public void mouseClicked(MouseEvent event) {
 
@@ -231,7 +254,7 @@ public class GameBoard extends JPanel {
 					y = (y1 - (y1 % (height / 8)));
 				} else {
 					GamePiece desiredMove = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
-					if (pSelected.isMoveValid(desiredMove, pieces) && isMoveValid(desiredMove)) {
+					if (pSelected.isMoveValid(desiredMove, pieces) && isMoveValid(desiredMove, pSelected)) {
 						GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),
 								pSelected.getPosY() * (height / 8), pSelected.getPosX(), pSelected.getPosY());
 						pieces[pSelected.getPosX()][pSelected.getPosY()] = temp;
@@ -239,24 +262,37 @@ public class GameBoard extends JPanel {
 						pSelected.setPosY(desiredMove.getPosY());
 						pieces[desiredMove.getPosX()][desiredMove.getPosY()] = pSelected;
 
-						if(desiredMove.getName().equals("null"))
-							gameLog.append(getColor(whiteTurn) + pSelected.getName() + " moved to " + desiredMove.getPosX() + " " + desiredMove.getPosY() + "\n");
-						
+						if (desiredMove.getName().equals("null"))
+							gameLog.append(getColor(whiteTurn) + pSelected.getName() + " moved to "
+									+ desiredMove.getPosX() + " " + desiredMove.getPosY() + "\n");
+
 						else
-							gameLog.append(getColor(whiteTurn) + pSelected.getName() + " capured " + getColor(!whiteTurn) + desiredMove.getName() + " at " + desiredMove.getPosX() + " " + desiredMove.getPosY() + "\n");
+							gameLog.append(getColor(whiteTurn) + pSelected.getName() + " capured "
+									+ getColor(!whiteTurn) + desiredMove.getName() + " at " + desiredMove.getPosX()
+									+ " " + desiredMove.getPosY() + "\n");
 						pSelected = null;
-						whiteTurn = !whiteTurn;	
+						whiteTurn = !whiteTurn;
 					}
 				}
 			}
-			if(whiteTurn)
+			checkMoves();
+//			for(GamePiece x : moves){
+//				System.out.println(x.getName() + ": " + x.getPosX() + " " + x.getPosY() + " " + x.isWhite());
+//			}
+//			System.out.println(moves.size());
+			if(moves.size() ==0){
+				gameLog.append("Game Over");
+				gameOver = true;
+			}
+			if (whiteTurn)
 				text.setText("White Move");
 			else
 				text.setText("Black Move");
 			repaint();
 		}
-		public String getColor(boolean color){
-			if(color)
+
+		public String getColor(boolean color) {
+			if (color)
 				return "White ";
 			else
 				return "Black ";

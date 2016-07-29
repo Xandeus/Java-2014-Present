@@ -119,7 +119,7 @@ public class GameBoard extends JPanel {
 			for (GamePiece p : gamePiece) {
 				if (!p.getName().equals("null") && (p.isWhite() == whiteTurn)) {
 					for (GamePiece move : p.findValidMoves(pieces)) {
-						if(p.isMoveValid(move, pieces) && isMoveValid(move,p)){
+						if(p.isMoveValid(move, pieces) && isMoveValid(moves,p)){
 							if(move.getName().equals("null") || (move.isWhite() != p.isWhite()))
 								moves.add(move);	
 						}
@@ -255,7 +255,13 @@ public class GameBoard extends JPanel {
 				} else {
 					GamePiece desiredMove = getArrayPos(x1 - (x1 % (width / 8)), y1 - (y1 % (height / 8)));
 					if (pSelected.isMoveValid(desiredMove, pieces) && isMoveValid(desiredMove, pSelected)) {
-						pSelected.movePiece(pSelected,pieces, width,height,desiredMove);
+						GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),
+								pSelected.getPosY() * (height / 8), pSelected.getPosX(), pSelected.getPosY());
+						pieces[pSelected.getPosX()][pSelected.getPosY()] = temp;
+						pSelected.setPosX(desiredMove.getPosX());
+						pSelected.setPosY(desiredMove.getPosY());
+						pieces[desiredMove.getPosX()][desiredMove.getPosY()] = pSelected;
+
 						if (desiredMove.getName().equals("null"))
 							gameLog.append(getColor(whiteTurn) + pSelected.getName() + " moved to "
 									+ desiredMove.getPosX() + " " + desiredMove.getPosY() + "\n");

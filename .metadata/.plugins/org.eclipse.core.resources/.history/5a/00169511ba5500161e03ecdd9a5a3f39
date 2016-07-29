@@ -111,6 +111,5 @@ public class Pawn extends GamePiece {
 		pSelected.setPosX(desiredMove.getPosX());
 		pSelected.setPosY(desiredMove.getPosY());
 		pieces[desiredMove.getPosX()][desiredMove.getPosY()] = pSelected;
-		fMove = false;
 	}
 }

@@ -61,7 +61,7 @@ public abstract class GamePiece {
 	public boolean isWhite(){
 		return isWhite;
 	}
-	public void movePiece(GamePiece pSelected, GamePiece[][] pieces,int width, int height,GamePiece desiredMove){
+	public void movePiece(GamePiece pSelected, GamePiece[][] pieces){
 		GamePiece temp = new EmptySpace(pSelected.getPosX() * (width / 8),
 				pSelected.getPosY() * (height / 8), pSelected.getPosX(), pSelected.getPosY());
 		pieces[pSelected.getPosX()][pSelected.getPosY()] = temp;

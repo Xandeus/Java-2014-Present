@@ -10,7 +10,7 @@ public abstract class GamePiece {
 	Image image;
 	boolean isWhite;
 	String name;
-	public GamePiece(int x, int y,boolean isWhite,int posX, int posY){
+	public GamePiece(int x, int y, boolean isWhite,int posX, int posY){
 		this.x = x;
 		this.y = y;
 		pX = posX;

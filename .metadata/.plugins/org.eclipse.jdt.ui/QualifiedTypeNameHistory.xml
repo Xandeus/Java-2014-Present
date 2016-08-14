@@ -58,6 +58,6 @@
 <fullyQualifiedTypeName name="twitter4j.Twitter"/>
 <fullyQualifiedTypeName name="twitter4j.TwitterFactory"/>
 <fullyQualifiedTypeName name="java.io.File"/>
-<fullyQualifiedTypeName name="chess.GamePiece"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="chess.GamePiece"/>
 </qualifiedTypeNameHistroy>

@@ -52,30 +52,36 @@ public class Pawn extends GamePiece {
 		}
 		if (!this.isWhite()) {
 			for (int y = posY + 1; y < posY + endVal; y++) {
-				if (posX != 0) {
-					validMoves.add(pieces[posX - 1][posY + 1]);
+				if((posY+1) < 7){
+					if (posX != 0) {
+						validMoves.add(pieces[posX - 1][posY + 1]);
+					}
+					if (posX != 7) {
+						validMoves.add(pieces[posX + 1][posY + 1]);
+					}
+					if (pieces[posX][y].getName().equals("null")) {
+						validMoves.add(pieces[posX][y]);
+					} else
+						return validMoves;
 				}
-				if (posX != 7) {
-					validMoves.add(pieces[posX + 1][posY + 1]);
-				}
-				if (pieces[posX][y].getName().equals("null")) {
-					validMoves.add(pieces[posX][y]);
-				} else
-					return validMoves;
+				
 			}
 		} else
 			for (int y = posY - 1; y > posY - endVal; y--) {
 				// Moving forward
-				if (posX != 0) {
-					validMoves.add(pieces[posX - 1][posY - 1]);
+				if((posY-1) > 0){
+					if (posX != 0) {
+						validMoves.add(pieces[posX - 1][posY - 1]);
+					}
+					if (posX != 7) {
+						validMoves.add(pieces[posX + 1][posY - 1]);
+					}
+					if (pieces[posX][y].getName().equals("null")) {
+						validMoves.add(pieces[posX][y]);
+					} else
+						return validMoves;
 				}
-				if (posX != 7) {
-					validMoves.add(pieces[posX + 1][posY - 1]);
-				}
-				if (pieces[posX][y].getName().equals("null")) {
-					validMoves.add(pieces[posX][y]);
-				} else
-					return validMoves;
+				
 
 			}
 		return validMoves;

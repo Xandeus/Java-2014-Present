@@ -1,8 +1,0 @@
-package chess;
-
-public class Test {
-	public static void main(String[] args) throws InterruptedException{
-		GameBoard gb = new GameBoard();
-		gb.frame();
-	}
-}

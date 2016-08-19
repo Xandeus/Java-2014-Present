@@ -18,7 +18,6 @@ import javax.swing.JTextField;
 
 public class WindowMouseListener extends JPanel {
 	HandlerClass handler = new HandlerClass();
-
 	static boolean lClickD = false, rClickD = false, mClickD = false;
 	static int clicks = 0;
 
@@ -30,7 +29,7 @@ public class WindowMouseListener extends JPanel {
 		g2d.setColor(Color.black);
 		int width = 1000;
 		int height = 800;
-
+		
 	}
 
 	public Color randColor() {
@@ -39,7 +38,7 @@ public class WindowMouseListener extends JPanel {
 
 	static JTextField text = new JTextField();
 
-	static JFrame frame = new JFrame("Conway's Game Of Life");
+	static JFrame frame = new JFrame("Test");
 
 	public static void frame() throws InterruptedException {
 		WindowMouseListener game = new WindowMouseListener();

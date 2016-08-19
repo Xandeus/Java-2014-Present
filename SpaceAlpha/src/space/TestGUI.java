@@ -263,9 +263,11 @@ public class TestGUI extends JPanel {
 		g2d.setColor(Color.black);
 		g2d.fillRect(0, 0, frame.getWidth(), frame.getHeight());
 		// Draw background stars
-		for (int i = 0; i < stars.length; i++) {
-			g2d.drawImage(stars[i].getImage(), (int) stars[i].getX(), (int) stars[i].getY(), stars[i].getSize(),
-					stars[i].getSize(), null);
+		if(stars != null){
+			for (int i = 0; i < stars.length; i++) {
+				g2d.drawImage(stars[i].getImage(), (int) stars[i].getX(), (int) stars[i].getY(), stars[i].getSize(),
+						stars[i].getSize(), null);
+			}
 		}
 		switch (view) {
 		case COMBATV:

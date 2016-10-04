@@ -3,6 +3,7 @@ package space;
 import java.awt.Color;
 
 public interface CelestialBody {
+	int detail = 250;
 	public int getWindowLocX();
 	public int getWindowLocY();
 	public void setWindowLocX(int x);
@@ -15,5 +16,6 @@ public interface CelestialBody {
 	public boolean hasAtmosphere();
 	public String getType();
 	public String getResources();
-	public Color getColor();
+	public Color[][] getTerrain();
+	public void generateTerrain(double scale,int octaves,double persistence, double frequency,double amplitude);
 }

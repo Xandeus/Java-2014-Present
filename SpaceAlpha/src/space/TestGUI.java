@@ -13,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class TestGUI extends JPanel {
 	boolean playerControlled;
 	boolean enemyControlled;
 
+	private Ellipse2D ellipse;
 	public static void main(String[] args) throws InterruptedException {
 		frame();
 	}
@@ -296,8 +298,9 @@ public class TestGUI extends JPanel {
 		case INDIVIDUALV:
 			// Individual view of planets
 			checkControl(body);
-			g2d.setColor(body.getColor());
-			g2d.fillOval(60, 25, wHeight - 60, wHeight - 60);
+			Color[][] terrain = body.getTerrain();
+			ellipse.setFrame(60, 25, wHeight - 60, wHeight - 60);
+		//	g2d.fillOval(60, 25, wHeight - 60, wHeight - 60);
 			g2d.drawImage(infoTab, wHeight + 10, 30, 300, 500, null);
 			g.setColor(Color.white);
 			g2d.drawString("Avaliable Constructions", wHeight + 100, 80);
@@ -330,13 +333,25 @@ public class TestGUI extends JPanel {
 				g2d.setColor(new Color(15, 100, 255, 50));
 				g2d.fillOval(40, 5, wHeight - 20, wHeight - 20);
 			}
+			g2d.setClip(ellipse);
+			for(int x = 0;x<terrain.length;x++){
+				for(int y = 0;y<terrain[0].length;y++){
+					g2d.setColor(terrain[x][y]);
+					g2d.fillRect(x*5, y*5, 5, 5);
+				}
+			}
 			break;
 		case SYSTEMV:
 			// Draw planets and stars from systems
+			ellipse = new Ellipse2D.Float();
 			for (CelestialBody b : bodies) {
+				if(b.getTerrain() == null){
+					b.generateTerrain(.007,(int)(Math.random()*5)+1,(int)(Math.random()*5)+1,(Math.random()*10),2);
+				}
+				terrain = b.getTerrain();
 				int c = b.getRadius() * 2;
 				int i = bodies.indexOf(b);
-				g2d.setColor(b.getColor());
+				g2d.setColor(Color.RED);
 				if (b.getType().equals("Star")) {
 					b.setWindowLocX(0);
 					b.setWindowLocY(500);
@@ -347,7 +362,7 @@ public class TestGUI extends JPanel {
 							+ bodies.get(0).getRadius());
 					b.setWindowLocY(500 + bodies.get(0).getRadius());
 				}
-				g2d.fillOval(b.getWindowLocX(), b.getWindowLocY(), c, c);
+				ellipse.setFrame(b.getWindowLocX(), b.getWindowLocY(), c, c);
 				if (b.hasAtmosphere()) {
 					g2d.setColor(new Color(15, 100, 255, 50));
 					g2d.fillOval(b.getWindowLocX() - 5, b.getWindowLocY() - 5, c + 10, c + 10);
@@ -356,6 +371,13 @@ public class TestGUI extends JPanel {
 					if (bu.getLocation() == b) {
 						g2d.setColor(Color.black);
 						g2d.fillRect(b.getWindowLocX() + (b.getRadius()), b.getWindowLocY() + (b.getRadius()), 5, 5);
+					}
+				}
+				g2d.setClip(ellipse);
+				for(int x = 0;x<terrain.length;x++){
+					for(int y = 0;y<terrain[0].length;y++){
+						g2d.setColor(terrain[x][y]);
+						g2d.fillRect(b.getWindowLocX()+x, b.getWindowLocY()+y, 1, 1);
 					}
 				}
 			}

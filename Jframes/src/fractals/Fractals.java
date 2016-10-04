@@ -30,17 +30,17 @@ public class Fractals extends JPanel {
 	int numBranches = 2;
 	int size = 100;
 	int incVal = 1;
-	int state = 0;
-	final int TRI = 0, SQR = 1, BRANCH = 2;
-	final int def = 0, gas = 1, random = 2;
-	int movementState = 1;
+	final int TRI = 0, SQR = 1, DNT = 2,BRANCH = 3;
+	int state = TRI;
+	final int DEF = 0, GAS = 1, RAND = 2, SHRINK = 3;
+	int movementState = DEF;
 	float theta = 0;
 
 	boolean zoom = false;
 	boolean rave = false;
 	boolean forceMaxB = false;
 	boolean isFall = false;
-	static boolean automate = false, completedRecursion = false;
+	static boolean automate = true, completedRecursion = false;
 	ArrayList<Shape> shapes = new ArrayList<Shape>();
 	Font f = new Font("Engravers MT", Font.BOLD, 12);
 
@@ -48,7 +48,7 @@ public class Fractals extends JPanel {
 		Fractals game = new Fractals();
 		frame.add(game);
 		frame.setResizable(true);
-		frame.setSize(1500, 900);
+	    frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		frame.setLocation(300, 10);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -62,33 +62,39 @@ public class Fractals extends JPanel {
 			game.repaint();
 			if (automate)
 				game.loop();
-			Thread.sleep(1);
+			Thread.sleep(2);
 		}
 	}
 
 	public void loop() {
 		if (!completedRecursion) {
-			switch(state){
-			case 0:
-				drawShape(0, frame.getHeight(),frame.getHeight());
+			switch (state) {
+			case TRI:
+				drawShape(0, frame.getHeight(), frame.getHeight());
 				break;
-			case 1:
-				drawShape(frame.getWidth()/2, frame.getHeight()/2,frame.getHeight()/4);
+			case SQR:
+				drawShape(frame.getWidth() / 2, frame.getHeight() / 2, frame.getHeight() / 4);
 				break;
-			case 2:
-				drawLine(frame.getWidth()/2, frame.getHeight(),0, frame.getHeight()/2, xVariance, yVariance);
+			case DNT:
+				drawShape(frame.getWidth() / 2, frame.getHeight() / 2, frame.getHeight() / 4);
+				break;
+			
+			case BRANCH:
+				drawLine(frame.getWidth() / 2, frame.getHeight(), 0, frame.getHeight() / 2, xVariance, yVariance);
 				break;
 			}
-			movementState = rand.nextInt(3);
+			movementState = rand.nextInt(4);
 			completedRecursion = true;
 		}
 	}
-	public void reset(){
-		count =0;
+
+	public void reset() {
+		count = 0;
 		numR = 0;
 		completedRecursion = false;
 		shapes.clear();
 	}
+
 	public Color randColor() {
 		return new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
 	}
@@ -112,14 +118,13 @@ public class Fractals extends JPanel {
 		if (count < shapes.size() && shapes.size() > 0) {
 			shapes.get(count).changeState();
 			count++;
-		}
-		else{
+		} else {
 			state++;
 			reset();
-			if(state>2)
+			if (state > 3)
 				state = 0;
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -142,21 +147,31 @@ public class Fractals extends JPanel {
 					case SQR:
 						g.drawRect(c.getX(), c.getY(), c.getR(), c.getR());
 						break;
+					case DNT:
+						g.drawRect(c.getX(), c.getY(), c.getR(), c.getR());
+						break;
 					case BRANCH:
 						g.drawLine(c.getX(), c.getY(), c.getX() + c.getDX(), c.getY() - c.getDY());
 						break;
 					}
 					if (zoom && c.getDY() <= 10) {
-//						c.alter(rand.nextInt(3) - 1, rand.nextInt(3) - 1);
+						// c.alter(rand.nextInt(3) - 1, rand.nextInt(3) - 1);
 						c.change(1, 1, -1);
 					}
-					switch(movementState){
-					case gas:
-						if(c.getY()>0)
-							c.change(rand.nextInt(3)-1, -1, 0);
+					switch (movementState) {
+					case GAS:
+						if (c.getY() > 0)
+							c.change(rand.nextInt(3) - 1, -1, 0);
 						break;
-					case random:
-						c.change(rand.nextInt(3)-1,rand.nextInt(3)-1, 0);
+					case RAND:
+						c.change(rand.nextInt(3) - 1, rand.nextInt(3) - 1, 0);
+						break;
+
+					case SHRINK:
+						if (c.getR() > 2) {
+							System.out.println("HEL");
+							c.change(0, 0, -1);
+						}
 						break;
 					}
 				}
@@ -215,13 +230,25 @@ public class Fractals extends JPanel {
 				drawShape(x, y, r / 2);
 				drawShape(x + r / 2, y, r / 2);
 				drawShape(x + r / 4, y - r / 2, r / 2);
-			} else {
+			} else if (state == SQR) {
 				// Squares
 				drawShape(x - r / 2, y + r / 4, r / 2);
 				drawShape(x + r / 4, y - r / 2, r / 2);
 
 				drawShape(x + r, y + r / 4, r / 2);
 				drawShape(x + r / 4, y + r, r / 2);
+			} else if (state == DNT) {
+				// Left squares
+				drawShape(x - (r / 3) * 2, y - (r / 3) * 2, r / 3);
+				drawShape(x - (r / 3) * 2, y + (r / 3), r / 3);
+				drawShape(x - (r / 3) * 2, y + r + (r / 3), r / 3);
+				// Middle squares
+				drawShape(x + (r / 3), y - (r / 3) * 2, r / 3);
+				drawShape(x + (r / 3), y + r + (r / 3), r / 3);
+				// Right squares
+				drawShape(x + r + (r / 3), y - (r / 3) * 2, r / 3);
+				drawShape(x + r + (r / 3), y + (r / 3), r / 3);
+				drawShape(x + r + (r / 3), y + r + (r / 3), r / 3);
 			}
 		}
 	}
@@ -249,8 +276,9 @@ public class Fractals extends JPanel {
 				case BRANCH:
 					drawLine(x, y, 0, size, xVariance, yVariance);
 					break;
+				
 				}
-
+				completedRecursion = true;
 			}
 		}
 

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,15 +14,14 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class SimplexTest extends JPanel {
 	HandlerClass handler = new HandlerClass();
@@ -33,6 +33,9 @@ public class SimplexTest extends JPanel {
 	static double persistence = 1, amplitude = 1, frequency = 1;
 	static String current;
 	int mouseX, mouseY;
+	private Ellipse2D ellipse = new Ellipse2D.Float();
+	ArrayList<Line> lines = new ArrayList();
+	//private Ellipse2D ellipse2 = new Ellipse2D.Float();
 
 	@Override
 	public void paint(Graphics g) {
@@ -40,41 +43,16 @@ public class SimplexTest extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.black);
-		int width = 1000;
-		int height = 800;
-		int box = 2;
-		float scale = .0075f;
-
-		for (int x = 0; x < 1000; x += box) {
-			for (int y = 0; y < 800; y += box) {
-				double h = SimplexNoise.OctavePerlin(x * scale, y * scale, octaves, persistence, frequency,amplitude); 
-				if(h<0){
-					int c = (int)((h + 1) / 2.0 * 255.0);
-					g.setColor(new Color(0, 0, c));
-				}
-				else if(h<.1){
-					int c = (int)((h + 1) / 2.0 * 255.0);
-					g.setColor(new Color(0, c, c));
-				}
-				else if(h<.2 ){
-					int c = (int)((h + 1) / 2.0 * 255.0);
-					g.setColor(new Color(c, c, 0));
-				}
-				else if(h<.9 ){
-					int c = (int)((h + 1) / 2.0 * 255.0);
-					g.setColor(new Color(0, c, 0));
-				}
-				else if(h<1){
-					int c = (int)((h + 1) / 2.0 * 255.0);
-					g.setColor(new Color(c, c, c));
-				}
-
-				g.fillRect(x, y, box, box);
-			}
-		}
 		
+		for(Line l : lines){
+			if(l.y > 500)
+				g2d.setColor(new Color(165,42,42));
+			else{
+				g2d.setColor(Color.green);
+			}
+			g2d.drawLine((l.x)-(count),l.y,l.x1-(count),l.y1);
+		}
 	}
-
 	public Color randColor() {
 		return new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
 	}
@@ -143,10 +121,12 @@ public class SimplexTest extends JPanel {
 	}
 
 	public void loop() {
-		if (count < 256)
-			count++;
-		else
+		if(count >= (lines.size()*5)){
 			count = 0;
+		}
+		else{
+			count++;
+		}
 	}
 
 	public static void main(String[] args) throws InterruptedException {
@@ -156,6 +136,7 @@ public class SimplexTest extends JPanel {
 
 	private class TextHandler implements ActionListener{
 		public void actionPerformed(ActionEvent evt) {
+			
 		    switch(current){
 			    case "Frequency":
 			    	frequency = Double.parseDouble(textField.getText());
@@ -171,6 +152,18 @@ public class SimplexTest extends JPanel {
 			    	break;
 		    }
 		    textField.setText("");
+		    lines.clear();
+		    int y = 500;
+		    int width = 1000;
+			int height = 800;
+			int box = 2;
+			float scale = .0075f;
+			for(int x = 0; x<width*100;x++ ){
+				double h = SimplexNoise.OctavePerlin((x * scale)+count, 1 * scale, octaves, persistence, frequency,amplitude); 
+				int c = (int) (h*5);
+				lines.add(new Line(x,y,x+1,y+c));
+				y +=c;
+			}
 		}
 		
 	}

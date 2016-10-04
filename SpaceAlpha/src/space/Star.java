@@ -2,62 +2,92 @@ package space;
 
 import java.awt.Color;
 
-public class Star implements CelestialBody{
+public class Star implements CelestialBody {
 	int radius;
 	int wLocX, wLocY;
-	int density = (int)(Math.random()*1000), volume = (int)(Math.random()*1000), mass = (int)(Math.random()*1000);
-	Color color = Color.getHSBColor((int)(Math.random()*20)*.01f, 1f, 1f);
-	public Star(){
-		radius = ((int)(Math.random()*51)+50);
+	int density = (int) (Math.random() * 1000), volume = (int) (Math.random() * 1000),
+			mass = (int) (Math.random() * 1000);
+	Color[][] terrain;
+
+	public Star() {
+		radius = ((int) (Math.random() * 51) + 50);
 	}
-	public Star(int r){
+
+	public Star(int r) {
 		radius = r;
 	}
-	public int getWindowLocX(){
+
+	public int getWindowLocX() {
 		return wLocX;
 	}
-	public int getWindowLocY(){
+
+	public int getWindowLocY() {
 		return wLocY;
 	}
+
 	public int getLocation() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	public Color getColor(){
-		return color;
+
+	public Color[][] getTerrain() {
+		return terrain;
 	}
-	public String getType(){
+
+	public void generateTerrain(double scale, int octaves, double persistence, double frequency, double amplitude) {
+		terrain = new Color[detail][detail];
+		for (int x = 0; x < detail; x += 1) {
+			for (int y = 0; y < detail; y += 1) {
+				double h = SimplexNoise.OctavePerlin(x * scale, y * scale, octaves, persistence, frequency, amplitude,
+						(Math.random() * 100) * scale);
+				int c = (int) ((h + 1) / 2.0 * 255.0);
+				terrain[x][y] = (new Color(255, 255, c));
+
+			}
+		}
+	}
+
+	public String getType() {
 		return "Star";
 	}
-	public String getResources(){
+
+	public String getResources() {
 		return "N/A";
 	}
-	public int getResourceTotal(){
+
+	public int getResourceTotal() {
 		return 0;
 	}
-	public boolean hasAtmosphere(){
+
+	public boolean hasAtmosphere() {
 		return false;
 	}
-	public int getRadius(){
+
+	public int getRadius() {
 		return radius;
 	}
+
 	public int getMass() {
 		// TODO Auto-generated method stub
 		return mass;
 	}
+
 	public int getDensity() {
 		// TODO Auto-generated method stub
 		return density;
 	}
+
 	public int getVolume() {
 		// TODO Auto-generated method stub
-		return (int)((4.0/3.0)*Math.PI*Math.pow(radius, 3));
+		return (int) ((4.0 / 3.0) * Math.PI * Math.pow(radius, 3));
 	}
-	//Sets gui window location x
-	public void setWindowLocX(int x){
+
+	// Sets gui window location x
+	public void setWindowLocX(int x) {
 		wLocX = x;
 	}
-	public void setWindowLocY(int y){
+
+	public void setWindowLocY(int y) {
 		wLocY = y;
 	}
 

@@ -17,5 +17,7 @@ public interface CelestialBody {
 	public String getType();
 	public String getResources();
 	public Color[][] getTerrain();
+	public Color[][] getTerrain(int time);
+
 	public void generateTerrain(double scale,int octaves,double persistence, double frequency,double amplitude);
 }

@@ -205,7 +205,7 @@ public class SimplexNoise { // Simplex noise in 2D, 3D and 4D
 		return total / maxValue;
 	}
 	public static double OctavePerlin(double x,double y,double z, int octaves, double persistence, double frequency,
-			double amplitude) {
+			double amplitude,double seed) {
 		double total = 0;
 		double maxValue = 0; // Used for normalizing result to 0.0 - 1.0
 		for (int i = 0; i < octaves; i++) {

@@ -29,7 +29,6 @@ public class WindowMouseListener extends JPanel {
 		g2d.setColor(Color.black);
 		int width = 1000;
 		int height = 800;
-		
 	}
 
 	public Color randColor() {

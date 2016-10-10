@@ -14,17 +14,21 @@ public class Planet implements CelestialBody {
 	// Change to better system
 	int atmoSphere = (int) (Math.random() * 2);
 	String pType;
+	int climate;
+	int TEMPERATE = 0, DESERT = 1;
 
 	public Planet() {
 		if ((int) (Math.random() * 2) == 0) {
 			pType = "Terrestrial";
 			radius = ((int) (Math.random() * 11) + 5);
 			planetResources[0] = resources[(int) (Math.random() * 5)];
+			climate = (int) (Math.random() * 2);
 		} else {
 			pType = "Gas";
 			radius = ((int) (Math.random() * 11) + 15);
 			planetResources[0] = "N/A";
 		}
+
 	}
 
 	public Planet(int r) {
@@ -55,26 +59,37 @@ public class Planet implements CelestialBody {
 				double h = SimplexNoise.OctavePerlin(x * scale, y * scale, octaves, persistence, frequency, amplitude,
 						(Math.random() * 100) * scale);
 				if (pType.equals("Terrestrial")) {
-					if (h < 0) {
-						int c = (int) ((h + 1) / 2.0 * 255.0);
-						terrain[x][y] = (new Color(0, 0, c));
-					} else if (h < .1) {
-						int c = (int) ((h + 1) / 2.0 * 255.0);
-						terrain[x][y] = (new Color(0, c, c));
-					} else if (h < .2) {
-						int c = (int) ((h + 1) / 2.0 * 255.0);
-						terrain[x][y] = (new Color(c, c, 0));
-					} else if (h < .9) {
-						int c = (int) ((h + 1) / 2.0 * 255.0);
-						terrain[x][y] = (new Color(0, c, 0));
-					} else if (h < 1) {
-						int c = (int) ((h + 1) / 2.0 * 255.0);
-						terrain[x][y] = (new Color(c, c, c));
+					if (climate == TEMPERATE) {
+						if (h < 0) {
+							int c = (int) ((h + 1) / 2.0 * 255.0);
+							terrain[x][y] = (new Color(0, 0, c));
+						} else if (h < .1) {
+							int c = (int) ((h + 1) / 2.0 * 255.0);
+							terrain[x][y] = (new Color(0, c, c));
+						} else if (h < .2) {
+							int c = (int) ((h + 1) / 2.0 * 255.0);
+							terrain[x][y] = (new Color(c, c, 0));
+						} else if (h < .9) {
+							int c = (int) ((h + 1) / 2.0 * 255.0);
+							terrain[x][y] = (new Color(0, c, 0));
+						} else if (h < 1) {
+							int c = (int) ((h + 1) / 2.0 * 255.0);
+							terrain[x][y] = (new Color(c, c, c));
+						}
+					} else {
+						if (h < -.5) {
+							int c = (int) ((h + 1) / 2.0 * 255.0);
+							terrain[x][y] = (new Color(0, 0, c));
+						} else if (h < .1) {
+							int c = (int) ((h + 1) / 2.0 * 255.0);
+							terrain[x][y] = (new Color(255, c, 0));
+						
+						} 
 					}
 				} else {
 					if (h < 1) {
 						int c = (int) ((h + 1) / 2.0 * 255.0);
-						terrain[x][y] = (new Color(0, 0, c));
+						terrain[x][y] = (new Color((int)(100*Math.random()), (int)(100*Math.random()), c));
 					}
 
 				}
@@ -126,6 +141,12 @@ public class Planet implements CelestialBody {
 
 	public void setWindowLocY(int y) {
 		wLocY = y;
+	}
+
+	@Override
+	public Color[][] getTerrain(int time) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

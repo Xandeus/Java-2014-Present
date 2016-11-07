@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<item value="C:\Users\Alex\Downloads\twitter4j-4.0.4\lib" key="org.eclipse.jdt.ui.lastextjar"/>
+	<item value="filter_imports;" key="filters_last_used"/>
 	<item value="640,680" key="UserLibraryLoadSaveDialog.size"/>
 	<section name="org.eclipse.ltk.ui.refactoring.settings">
 		<item value="false" key="renameSubpackages"/>
@@ -59,11 +60,12 @@
 	</section>
 	<section name="FatJarPackageWizard">
 		<item value="C:\Users\Alex\Dropbox\Programming\Asus_Java.xml" key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION"/>
-		<item value="C:\Users\Alex\Desktop\JavaGameDevelopment.jar" key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION"/>
+		<item value="C:\Users\Alex\Dropbox\Space Alpha\Space Alpha.jar" key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION"/>
 		<item value="TestGUI - SpaceAlpha" key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME"/>
 		<item value="false" key="FatJarPackageWizardPage.ANTSCRIPT_SAVE"/>
 		<item value="3" key="FatJarPackageWizardPage.LIBRARY_HANDLING"/>
 		<list key="FatJarPackageWizardPage.DESTINATION_NAMES_ID">
+			<item value="C:\Users\Alex\Dropbox\Space Alpha\Space Alpha.jar"/>
 			<item value="C:\Users\Alex\Desktop\JavaGameDevelopment.jar"/>
 		</list>
 		<list key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION_HISTORY">

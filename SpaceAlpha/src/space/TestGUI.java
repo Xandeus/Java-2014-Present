@@ -34,7 +34,7 @@ public class TestGUI extends JPanel {
 	static Image enemyShip;
 	static Image enemyLaser;
 	static BackgroundStar[] stars;
-	static int backgroundStarAmount = 1000;
+	static int backgroundStarAmount = 200;
 	Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
 	Cursor defCursor = Cursor.getDefaultCursor();
 	Cursor currentCursor;
@@ -54,7 +54,7 @@ public class TestGUI extends JPanel {
 	int mX, mY;
 	int highlightX, highlightY;
 	int highlightR;
-	int numSystems = 250;
+	int numSystems = 50;
 	int systemPoint;
 	int sysPointSize = 5;
 	static int wWidth , wHeight;
@@ -113,14 +113,14 @@ public class TestGUI extends JPanel {
 		frame.add(game);
 		frame.pack();
 		frame.setVisible(true);
-	    frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+		frame.setSize(1500,800);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		frame.addMouseListener(game.handler);
 //		frame.addMouseMotionListener(game.handler);
 		frame.addKeyListener(game.handler);
-	    wWidth = (int)(frame.getSize().getWidth());
-	    wHeight = (int)(frame.getSize().getHeight());
+	    wWidth = 1500;
+	    wHeight = 800;
 		randomizeStars(); 
 		while (true) {
 			game.gameLoop();
@@ -149,11 +149,11 @@ public class TestGUI extends JPanel {
 					highlightX = systemLocations.get(loc).x;
 					highlightY = systemLocations.get(loc).y;
 					highlightR = 50;
-					Thread.sleep(2000);
+					Thread.sleep(500);
 					view--;			
 					break;
 				case SYSTEMV:
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 					if(!isZooming && count >= bodies.size()){
 						count = 0;
 						view++;
@@ -164,7 +164,7 @@ public class TestGUI extends JPanel {
 					}
 					break;
 				case INDIVIDUALV:
-					Thread.sleep(3000);
+					Thread.sleep(2000);
 					isZooming = false;
 					count++;
 					view++;
@@ -387,7 +387,7 @@ public class TestGUI extends JPanel {
 			ellipse = new Ellipse2D.Float();
 			for (CelestialBody b : bodies) {
 				if(b.getTerrain() == null){
-					b.generateTerrain(.007,(int)(Math.random()*5)+1,(int)(Math.random()*5)+1,(Math.random()*10),2);
+					b.generateTerrain((Math.random()*.01),(int)(Math.random()*5)+1,(int)(Math.random()*5)+1,(Math.random()*10),2);
 				}
 				terrain = b.getTerrain();
 				int c = b.getRadius() * 2;

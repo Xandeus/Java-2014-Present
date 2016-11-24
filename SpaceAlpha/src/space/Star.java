@@ -55,7 +55,7 @@ public class Star implements CelestialBody {
 				int c = (int) ((h + 1) / 2.0 * 255.0);
 				switch(starColor){
 					case(WHITE):
-						terrain[x][y] = (new Color(255, 255, 255,c));
+						terrain[x][y] = (new Color(255, 255, 255,c	));
 						break;
 					case(RED):
 						terrain[x][y] = (new Color(255, c, c));

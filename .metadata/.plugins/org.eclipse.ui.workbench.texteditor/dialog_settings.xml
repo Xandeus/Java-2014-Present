@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="isRegEx"/>
-		<item value="iterator" key="selection"/>
+		<item value="Body" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="true" key="wholeword"/>
 		<list key="findhistory">
-			<item value="iterator"/>
-			<item value="generateTerrain"/>
 			<item value="body"/>
 			<item value="generateTerrain()"/>
 			<item value="terrain"/>
 			<item value="generate"/>
+			<item value="generateTerrain"/>
 			<item value="ellipse"/>
 			<item value="import java\.io\.BufferedReader;\Rimport java\.io\.File;\Rimport java\.io\.InputStreamReader;\Rimport java\.io\.OutputStreamWriter;\Rimport java\.net\.URI;\Rimport java\.net\.URL;\Rimport java\.net\.URLConnection;\Rimport java\.net\.URLEncoder;\Rimport java\.nio\.file\.Paths;\R\Rpublic class BrowserTest \{\R\tpublic static void main\(String\[\] args\) throws Exception \{\R\t\tURI oracle = new URI\(&quot;file:///C:/Users/Alex/Documents/TestWebsite\.html&quot;\);\R\t\tURLConnection yc = oracle\.toURL\(\)\.openConnection\(\);\R\t\tBufferedReader in = new BufferedReader\(new InputStreamReader\(yc\.getInputStream\(\)\)\);\R\t\tString inputLine;\R\t\tif \(args\.length != 2\) \{\R            System\.err\.println\(&quot;Usage:  java Reverse &quot;\R                \+ &quot;http://&lt;location of your servlet/script&gt;&quot;\R                \+ &quot; string_to_reverse&quot;\);\R            System\.exit\(1\);\R        \}\R\R        String stringToReverse = URLEncoder\.encode\(args\[1\], &quot;UTF-8&quot;\);\R\R        URL url = new URL\(args\[0\]\);\R        URLConnection connection = url\.openConnection\(\);\R        connection\.setDoOutput\(true\);\R\R        OutputStreamWriter out = new OutputStreamWriter\(\R                                         connection\.getOutputStream\(\)\);\R        out\.write\(&quot;string=&quot; \+ stringToReverse\);\R        out\.close\(\);\R\R        BufferedReader ins = new BufferedReader\(\R                                    new InputStreamReader\(\R                                    connection\.getInputStream\(\)\)\);\R        String decodedString;\R        while \(\(decodedString = in\.readLine\(\)\) != null\) \{\R            System\.out\.println\(decodedString\);\R        \}\R        in\.close\(\);\R    \}\R\t\}\R\}\R"/>
+			<item value="frequency"/>
 		</list>
 		<list key="replacehistory">
 			<item value=""/>

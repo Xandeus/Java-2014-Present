@@ -18,7 +18,7 @@ public class Planet implements CelestialBody {
 	int TEMPERATE = 0, DESERT = 1;
 
 	public Planet() {
-		if ((int) (Math.random() * 10) > 2) {
+		if ((int) (Math.random() * 2) == 0) {
 			pType = "Terrestrial";
 			radius = ((int) (Math.random() * 11) + 5);
 			planetResources[0] = resources[(int) (Math.random() * 5)];
@@ -77,12 +77,12 @@ public class Planet implements CelestialBody {
 							terrain[x][y] = (new Color(c, c, c));
 						}
 					} else {
-						if (h < .5) {
-							int c = (int) ((h + 1) / 2.0 * 255.0);
-							terrain[x][y] = (new Color(c, c, 0));
-						} else if (h < 1) {
+						if (h < -.5) {
 							int c = (int) ((h + 1) / 2.0 * 255.0);
 							terrain[x][y] = (new Color(0, 0, c));
+						} else if (h < .1) {
+							int c = (int) ((h + 1) / 2.0 * 255.0);
+							terrain[x][y] = (new Color(255, c, 0));
 						
 						} 
 					}

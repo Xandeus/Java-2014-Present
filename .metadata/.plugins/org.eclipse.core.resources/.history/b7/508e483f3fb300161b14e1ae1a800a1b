@@ -1,0 +1,15 @@
+package physicsGame;
+
+public class CannonBall {
+	int x, y;
+	float vx,vy,ax,ay;
+	public CannonBall(int x, int y,float vx,float vy, float ax, float ay){
+		this.x = x; 
+		this.y = y;
+		this.ax = ax; 
+		this.ay = ay;
+	}
+	public void getVX(){
+		return vx;
+	}
+}

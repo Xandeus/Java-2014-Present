@@ -1,9 +1,1 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-[[{"location":"C:\\Program Files\\Java\\jre1.8.0_101","type":"JRE","hints":{"EXECUTION_ENVIRONMENT":"JavaSE-1.8"}},"jre:jre:1.8.0"],[{"location":"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\Jframes","type":"PROJECT","hints":{"PROJECT_NAME":"Jframes"}},"ABSENT"]]
-=======
-[[{"location":"C:\\Program Files\\Java\\jre1.8.0_101","type":"JRE","hints":{"EXECUTION_ENVIRONMENT":"JavaSE-1.8"}},"jre:jre:1.8.0"]]
->>>>>>> parent of 42ffae9... Beginnings of basic water simulation, using framework of cellular automata.
-=======
-[[{"location":"C:\\Program Files\\Java\\jre1.8.0_101","type":"JRE","hints":{"EXECUTION_ENVIRONMENT":"JavaSE-1.8"}},"jre:jre:1.8.0"]]
->>>>>>> parent of 42ffae9... Beginnings of basic water simulation, using framework of cellular automata.
+[[{"location":"C:\\Users\\Alex\\Dropbox\\Programming\\JavaAsus\\Jframes","type":"PROJECT","hints":{"PROJECT_NAME":"Jframes"}},"ABSENT"],[{"location":"C:\\Program Files\\Java\\jre1.8.0_101","type":"JRE","hints":{"EXECUTION_ENVIRONMENT":"JavaSE-1.8"}},"jre:jre:1.8.0"]]

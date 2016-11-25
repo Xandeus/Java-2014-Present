@@ -34,8 +34,8 @@ public class Water extends JPanel {
 	int bx;
 	int by;
 	boolean water = true;
-	static int width = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
-	static int height = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
+	static int width = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width/2;
+	static int height = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height/2;
 	Random rand = new Random();
 	@Override
 	public void paint(Graphics g) {
@@ -85,46 +85,47 @@ public class Water extends JPanel {
 				game.checkCells();
 				game.updateCells();
 			}
-			Thread.sleep(35);
+			Thread.sleep(1);
 		}
 	}
 
 	public void checkCells() {
-		for (Iterator<Cell> iterator = aliveCells.iterator(); iterator.hasNext();) {
+	    Iterator<Cell> iterator = aliveCells.iterator();
+		while(iterator.hasNext()){
 			Cell c = iterator.next();
-	
 			int t = c.getType();
 			Cell[] n = getNeighbors(c.getPosX(), c.getPosY());
 			if (c.isAlive()) {
 				if (t == Cell.DIRT) {
+					//aliveCells.add(c);
 				} else {
-					deadCells.add(c);
+				//	deadCells.add(c);
 					if (!n[0].isAlive()) {
-						aliveCells.add(n[0]);
+						//aliveCells.add(n[0]);
 					} else if (c.getVel() == 0 && !n[3].isAlive() && !n[2].isAlive()) {
 						if (rand.nextBoolean()) {
 							n[3].setVel(c.getVel() - 1);
-							aliveCells.add(n[3]);
+						//	aliveCells.add(n[3]);
 						} else {
 							n[3].setVel(c.getVel() + 1);
-							aliveCells.add(n[2]);
+						//	aliveCells.add(n[2]);
 
 						}
 					} else if (!n[2].isAlive()) {
 						n[2].setVel(c.getVel() - 1);
-						aliveCells.add(n[2]);
+						//aliveCells.add(n[2]);
 					} else if (!n[3].isAlive()) {
 						n[3].setVel(c.getVel() - 1);
-						aliveCells.add(n[3]);
+					//	aliveCells.add(n[3]);
 					} else {
 						if (c.getVel() > 0) {
 							n[2].setVel(c.getVel() - 1);
-							aliveCells.add(n[2]);
+							//aliveCells.add(n[2]);
 						} else if (c.getVel() < 0) {
 							n[3].setVel(c.getVel() + 1);
-							aliveCells.add(n[3]);
-						} else
-							aliveCells.add(c);
+							//aliveCells.add(n[3]);
+						} //else
+						//	aliveCells.add(c);
 					}
 
 				}

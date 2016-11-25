@@ -2,7 +2,11 @@
   "version": "v1",
   "title": "Eclipse Automated Error Reporting",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "timestamp": 1480003777088,
+=======
+  "timestamp": 1476062593190,
+>>>>>>> parent of 42ffae9... Beginnings of basic water simulation, using framework of cellular automata.
 =======
   "timestamp": 1476062593190,
 >>>>>>> parent of 42ffae9... Beginnings of basic water simulation, using framework of cellular automata.
@@ -67,7 +71,11 @@
     "org.eclipse.ui::Conflicting handlers for*"
   ],
 <<<<<<< HEAD
+<<<<<<< HEAD
   "problemsZipLastDownloadTimestamp": 1480004080070
+=======
+  "problemsZipLastDownloadTimestamp": 1476062897795
+>>>>>>> parent of 42ffae9... Beginnings of basic water simulation, using framework of cellular automata.
 =======
   "problemsZipLastDownloadTimestamp": 1476062897795
 >>>>>>> parent of 42ffae9... Beginnings of basic water simulation, using framework of cellular automata.

@@ -11,19 +11,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
-public class Water extends JPanel {
+public class GameOfLife extends JPanel {
 	HandlerClass handler = new HandlerClass();
 	Cell[][] cells;
 	ArrayList<Cell> aliveCells = new ArrayList<Cell>();
 	ArrayList<Cell> deadCells = new ArrayList<Cell>();
+	ArrayList<Cell> brightenCells = new ArrayList<Cell>();
 	static boolean lClickD = false, rClickD = false, mClickD = false;
 	static boolean gameStarted = false;
 	static boolean pauseGame = false;
@@ -33,16 +31,15 @@ public class Water extends JPanel {
 	int blockSize = 2;
 	int bx;
 	int by;
-	boolean water = true;
 	static int width = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
 	static int height = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
-	Random rand = new Random();
+
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(Color.white);
+		g2d.setColor(Color.black);
 		g2d.fillRect(0, 0, width, height);
 		if (gameStarted) {
 			for (Cell[] x : cells) {
@@ -62,16 +59,17 @@ public class Water extends JPanel {
 
 	static JTextField text = new JTextField();
 
-	static JFrame frame = new JFrame("Water");
+	static JFrame frame = new JFrame("Conway's Game Of Life");
 
 	public static void frame() throws InterruptedException {
-		Water game = new Water();
+		GameOfLife game = new GameOfLife();
 		Font f = new Font("Engravers MT", Font.BOLD, 23);
 		text.setEditable(false);
 		text.setBackground(Color.GRAY);
 		text.setFont(f);
 		frame.add(game);
 		frame.setResizable(false);
+		frame.setUndecorated(true);
 		frame.setSize(width, height);
 		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,86 +82,70 @@ public class Water extends JPanel {
 			if (gameStarted && !pauseGame) {
 				game.checkCells();
 				game.updateCells();
+				if(!done && updateCount > 10000){
+					game.randAlive();
+					updateCount = 0;
+					done=true;
+				}
+				updateCount++;
 			}
 			Thread.sleep(35);
 		}
 	}
-
-	public void checkCells() {
-		for (Iterator<Cell> iterator = aliveCells.iterator(); iterator.hasNext();) {
-			Cell c = iterator.next();
-	
-			int t = c.getType();
-			Cell[] n = getNeighbors(c.getPosX(), c.getPosY());
-			if (c.isAlive()) {
-				if (t == Cell.DIRT) {
-				} else {
-					deadCells.add(c);
-					if (!n[0].isAlive()) {
-						aliveCells.add(n[0]);
-					} else if (c.getVel() == 0 && !n[3].isAlive() && !n[2].isAlive()) {
-						if (rand.nextBoolean()) {
-							n[3].setVel(c.getVel() - 1);
-							aliveCells.add(n[3]);
-						} else {
-							n[3].setVel(c.getVel() + 1);
-							aliveCells.add(n[2]);
-
-						}
-					} else if (!n[2].isAlive()) {
-						n[2].setVel(c.getVel() - 1);
-						aliveCells.add(n[2]);
-					} else if (!n[3].isAlive()) {
-						n[3].setVel(c.getVel() - 1);
-						aliveCells.add(n[3]);
-					} else {
-						if (c.getVel() > 0) {
-							n[2].setVel(c.getVel() - 1);
-							aliveCells.add(n[2]);
-						} else if (c.getVel() < 0) {
-							n[3].setVel(c.getVel() + 1);
-							aliveCells.add(n[3]);
-						} else
-							aliveCells.add(c);
-					}
-
+	public void randAlive(){
+		for (int x = cells.length/6;x<cells.length-(cells.length/6);x++) {
+			for (int y = cells[0].length/6;y<cells[0].length-(cells[0].length/6);y++) {
+				if((int)(Math.random()*2)<1){
+					cells[x][y].setAlive(true);
 				}
+			}
+		}
+	}
+	public void checkCells() {
+		for (Cell[] x : cells) {
+			for (Cell c : x) {
+				int n = getAliveNeighbours(c.getPosX(), c.getPosY());
+				if (c.isAlive() && (n < 2 || n > 3)) {
+					deadCells.add(c);
+				}
+				else if (n == 3 && !c.isAlive())
+					aliveCells.add(c);
+
 			}
 		}
 	}
 
 	public void updateCells() {
+		for (Cell c : aliveCells) {
+			c.setAlive(true);
+		}
 		for (Cell c : deadCells) {
 			c.setAlive(false);
-			c.setVel(0);
 		}
-		for (Cell c : aliveCells) {
-			c.setAlive(true, c.getType());
-		}
+		
 		aliveCells.clear();
 		deadCells.clear();
 	}
 
-	public Cell[] getNeighbors(int px, int py) {
-		Cell[] n = new Cell[4];
-		// Down
-		if (py + 1 < cells[0].length)
-			n[0] = cells[px][py + 1];
-		// Up
-		if (py - 1 > 0)
-			n[1] = cells[px][py - 1];
-		// Right
-		if (px + 1 < cells.length)
-			n[2] = cells[px + 1][py];
-		// Left
-		if (px - 1 > 0)
-			n[3] = cells[px - 1][py];
+	public int getAliveNeighbours(int px, int py) {
+		int count = 0;
+		for (int x = px - 1; x <= px + 1; x++) {
+			for (int y = py - 1; y <= py + 1; y++) {
+				if (x > 0 && x < cells.length && y > 0 && y < cells[0].length) {
+					if (cells[x][y].isAlive() && !(px == x && py == y)) {
+						count++;
+					}
+				}
 
-		return n;
+			}
+		}
+		return count;
 	}
 
 	public static void main(String[] args) throws InterruptedException {
+
 		frame();
+
 	}
 
 	private class HandlerClass implements MouseListener, MouseMotionListener, KeyListener {
@@ -174,20 +156,19 @@ public class Water extends JPanel {
 		public void mousePressed(MouseEvent event) {
 			int x = event.getX() - 5;
 			int y = event.getY() - 32;
-			bx = x - (x % blockSize);
-			by = y - (y % blockSize);
-			if (water)
-				cells[bx / blockSize][by / blockSize].setAlive(true, Cell.WATER);
-			else {
-				cells[bx / blockSize][by / blockSize].setAlive(true, Cell.DIRT);
+			if (event.getButton() == MouseEvent.BUTTON1) {
+				bx = x - (x % blockSize);
+				by = y - (y % blockSize);
 
+				cells[bx / blockSize][by / blockSize].setAlive(true);
+
+				// getAliveNeighbours(bx/5, by/5);
 			}
-			for(Cell[] cell :cells){
-				for(Cell c : cell){
-					if(c.isAlive())
-						aliveCells.add(c);
-				}
+			if (event.getButton() == MouseEvent.BUTTON3) {
 			}
+			if (event.getButton() == MouseEvent.BUTTON2) {
+			}
+
 		}
 
 		public void mouseReleased(MouseEvent event) {
@@ -204,10 +185,6 @@ public class Water extends JPanel {
 				for (int x = 0; x < width / blockSize; x++) {
 					for (int y = 0; y < height / blockSize; y++) {
 						cells[x][y] = new Cell(x * blockSize, y * blockSize, x, y);
-						if (x == 0 || y == 0 || x == (width / blockSize) - 1 || y == (height / blockSize) - 1) {
-							cells[x][y].setType(Cell.DIRT);
-							cells[x][y].setAlive(true);
-						}
 					}
 				}
 			}
@@ -225,12 +202,8 @@ public class Water extends JPanel {
 			int y = event.getY() - 32;
 			bx = x - (x % blockSize);
 			by = y - (y % blockSize);
-			if (water)
-				cells[bx / blockSize][by / blockSize].setAlive(true, Cell.WATER);
-			else {
-				cells[bx / blockSize][by / blockSize].setAlive(true, Cell.DIRT);
+			cells[bx / blockSize][by / blockSize].setAlive(true);
 
-			}
 		}
 
 		public void mouseMoved(MouseEvent event) {
@@ -251,9 +224,6 @@ public class Water extends JPanel {
 						c.setAlive(false);
 					}
 				}
-			}
-			if (keyCode == e.VK_W) {
-				water = !water;
 			}
 
 		}

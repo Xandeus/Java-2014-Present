@@ -97,6 +97,7 @@ public class Water extends JPanel {
 			Cell[] n = getNeighbors(c.getPosX(), c.getPosY());
 			if (c.isAlive()) {
 				if (t == Cell.DIRT) {
+					iterator.;
 				} else {
 					deadCells.add(c);
 					if (!n[0].isAlive()) {

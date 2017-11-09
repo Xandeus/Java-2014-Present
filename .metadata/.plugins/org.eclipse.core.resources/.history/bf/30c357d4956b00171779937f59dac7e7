@@ -1,0 +1,33 @@
+package imageData;
+import java.io.*;
+import java.util.HashSet;
+import java.awt.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+public class ImageParser {
+	 public ImageParser(String fileName){
+		File file= new File(fileName);
+		HashSet colors = new HashSet();
+		BufferedImage image;
+		try {
+			image = ImageIO.read(file);
+			// Getting pixel color by position x and y 
+			  int imgWidth = image.getWidth();
+			  int imgHeight = image.getHeight();
+			  System.out.println(imgWidth + " " + imgHeight);
+			  for(int x = 0;x<imgWidth;x++){
+				  int clr=  image.getRGB(x,0); 
+				  int  red   = (clr & 0x00ff0000) >> 16;
+				  int  green = (clr & 0x0000ff00) >> 8;
+				  int  blue  =  clr & 0x000000ff;
+//				  System.out.print("Red Color value = "+ red + "\t");
+//				  System.out.print("Green Color value = "+ green + "\t");
+//				  System.out.println("Blue Color value = "+ blue); 
+		}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  
+	 }
+}

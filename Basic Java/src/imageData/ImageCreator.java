@@ -1,0 +1,40 @@
+package imageData;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+public class ImageCreator {
+	public static void main(String args[]) throws IOException {
+		ImageParser testImage = new ImageParser("src/imageData/8xlOY2v.jpg");
+		// file object
+		File f = null;
+		Color[] imgColors = testImage.getColors();
+		int height = 320;
+		int width = imgColors.length;
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		
+		// create random image pixel by pixel
+		for (int x = 0; x < width; x++) {
+			int a = imgColors[x].getAlpha(); // alpha
+			int r = imgColors[x].getRed(); // red
+			int g = imgColors[x].getGreen(); // green
+			int b = imgColors[x].getBlue(); // blue
+
+			int p = (a << 24) | (r << 16) | (g << 8) | b; // pixel
+			for (int y = 0; y < height; y++) {
+				img.setRGB(x, y, p);
+			}
+		}
+		// write image
+		try {
+			f = new File("\\Users\\Alex\\Dropbox\\Output.png");
+			ImageIO.write(img, "png", f);
+		} catch (IOException e) {
+			System.out.println("Error: " + e);
+		}
+	}// main() ends here
+}// class ends here
